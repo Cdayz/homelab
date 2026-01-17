@@ -18,12 +18,9 @@
     };
 
     jails = {
-      sshd = {
+      sshd.settings = {
         enabled = true;
         backend = "systemd";
-        settings = {
-          mode = "normal";
-        };
       };
     };
   };
