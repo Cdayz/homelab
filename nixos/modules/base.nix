@@ -22,6 +22,8 @@
     MaxRetentionSec=7day
   '';
 
+  systemd.defaultUnit = "multi-user.target";
+
   system.autoUpgrade = {
     enable = true;
     allowReboot = false;
