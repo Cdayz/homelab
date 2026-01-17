@@ -28,6 +28,10 @@
   networking.useNetworkd = false;
   systemd.network.enable = false;
   networking.networkmanager.enable = true;
+  networking.networkmanager.unmanaged = [
+    "interface-name:cni0"
+    "interface-name:flannel.1"
+  ];
 
   system.autoUpgrade = {
     enable = true;

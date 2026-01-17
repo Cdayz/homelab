@@ -1,11 +1,11 @@
 { pkgs, ... }:
 
 {
-  systemd.services.k3s.after = [ "NetworkManager.service" ];
-
   services.k3s = {
     enable = true;
     role = "server";
+
+    networkManager = true;
 
     extraFlags = [
       "--disable=traefik"
