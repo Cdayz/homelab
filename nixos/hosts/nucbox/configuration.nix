@@ -15,6 +15,18 @@
   ];
 
   networking.hostName = "nucbox";
+  networking.networkmanager.enable = true;
+
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  services.xserver.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
 
   system.stateVersion = "25.11";
 }
