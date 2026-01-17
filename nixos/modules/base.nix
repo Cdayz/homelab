@@ -23,6 +23,11 @@
   '';
 
   systemd.defaultUnit = lib.mkForce "multi-user.target";
+  systemd.services.NetworkManager.wantedBy = [ "multi-user.target" ];
+
+  networking.useNetworkd = false;
+  systemd.network.enable = false;
+  networking.networkmanager.enable = true;
 
   system.autoUpgrade = {
     enable = true;
