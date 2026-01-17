@@ -9,7 +9,7 @@ let
     echo "Waiting for Kubernetes API..."
     until ${pkgs.kubectl}/bin/kubectl \
       --kubeconfig=${kubeconfig} \
-      version --short; do
+      get --raw=/readyz >/dev/null 2>&1; do
       sleep 5
     done
 
