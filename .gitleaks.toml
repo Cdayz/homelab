@@ -1,0 +1,5 @@
+title = "homelab gitleaks config"
+
+[allowlist]
+description = "Allow encrypted secrets"
+paths = ['secrets/secrets.yaml']

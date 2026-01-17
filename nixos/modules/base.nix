@@ -12,6 +12,8 @@
     tmux
     curl
     wget
+    age
+    sops
   ];
 
   services.journald.extraConfig = ''
