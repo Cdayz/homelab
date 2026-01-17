@@ -13,7 +13,6 @@
     HandleLidSwitchExternalPower = "ignore";
   };
 
-  # Полностью отключаем sleep/suspend/hibernate targets
   systemd.targets.sleep.enable = false;
   systemd.targets.suspend.enable = false;
   systemd.targets.hibernate.enable = false;

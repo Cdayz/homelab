@@ -17,6 +17,8 @@
 
       MaxAuthTries = 3;
       LoginGraceTime = "30s";
+
+      UsePAM = true;
     };
 
     extraConfig = ''
