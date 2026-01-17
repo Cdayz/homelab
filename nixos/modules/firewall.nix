@@ -3,7 +3,7 @@
     enable = true;
 
     allowedTCPPorts = [
-      22 # SSH
+      2222 # SSH
       80 # HTTP
       443 # HTTPS
     ];
