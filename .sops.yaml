@@ -1,0 +1,8 @@
+creation_rules:
+  - path_regex: secrets/.*\.yaml
+    encrypted_regex: "^(PSK|.*)$"
+    age:
+      # Server identity
+      - age1z970s33eyevjee6qahah8a7xjxaqr3n2wpuxza2d8yqxhk0hmexq6swrue
+      # Dev Machine Identity
+      - age1gukgkhqaksjej9gdjgeqkx4qutjz7tpjqr5y4rmlvmetk4gf6pwqsz63ud

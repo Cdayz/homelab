@@ -15,7 +15,10 @@
     age
     sops
     go-task
+    fish
   ];
+
+  programs.fish.enable = true;
 
   services.journald.extraConfig = ''
     SystemMaxUse=500M

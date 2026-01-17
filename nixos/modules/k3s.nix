@@ -5,8 +5,6 @@
     enable = true;
     role = "server";
 
-    networkManager = true;
-
     extraFlags = [
       "--disable=traefik"
       "--disable=servicelb"

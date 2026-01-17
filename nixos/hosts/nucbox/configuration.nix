@@ -7,6 +7,7 @@
     ../../modules/base.nix
     ../../modules/users.nix
     ../../modules/ssh.nix
+    ../../modules/wifi.nix
     ../../modules/firewall.nix
     ../../modules/fail2ban.nix
     ../../modules/power.nix
