@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   time.timeZone = "Europe/Moscow";
@@ -22,7 +22,7 @@
     MaxRetentionSec=7day
   '';
 
-  systemd.defaultUnit = "multi-user.target";
+  systemd.defaultUnit = lib.mkForce "multi-user.target";
 
   system.autoUpgrade = {
     enable = true;
