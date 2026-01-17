@@ -18,5 +18,13 @@
 
   services.journald.extraConfig = ''
     SystemMaxUse=500M
+    MaxRetentionSec=7day
   '';
+
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = false;
+    dates = "03:00";
+    flake = "/home/crazy/homelab";
+  };
 }

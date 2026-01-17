@@ -8,6 +8,7 @@
     ../../modules/users.nix
     ../../modules/ssh.nix
     ../../modules/firewall.nix
+    ../../modules/fail2ban.nix
     ../../modules/directories.nix
     ../../modules/k3s.nix
     ../../modules/secrets.nix
