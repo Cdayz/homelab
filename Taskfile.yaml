@@ -1,0 +1,74 @@
+version: "3"
+
+vars:
+  HOST: nucbox
+  FLAKE: .#{{.HOST}}
+
+tasks:
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  status:
+    desc: Show k3s and ArgoCD status
+    cmds:
+      - sudo systemctl status k3s --no-pager || true
+      - sudo systemctl status argocd-bootstrap --no-pager || true
+      - sudo kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml get pods -A || true
+
+  nixos:switch:
+    desc: Apply NixOS configuration (nixos-rebuild switch)
+    cmds:
+      - sudo nixos-rebuild switch --flake {{.FLAKE}}
+
+  nixos:rebuild:
+    desc: Full NixOS rebuild (build + switch)
+    cmds:
+      - sudo nixos-rebuild boot --flake {{.FLAKE}}
+      - sudo reboot
+
+  k3s:stop:
+    desc: Stop k3s and ArgoCD bootstrap
+    cmds:
+      - sudo systemctl stop argocd-bootstrap || true
+      - sudo systemctl stop k3s || true
+
+  k3s:reset:
+    desc: HARD RESET k3s cluster (DESTROYS ALL K8S DATA)
+    prompt: |
+      ⚠️  This will DESTROY the entire k3s cluster state:
+      - all namespaces
+      - all secrets
+      - all CRDs
+      - all PVCs
+
+      Type 'reset-k3s' to continue:
+    cmds:
+      - test "{{.CLI_ARGS}}" = "reset-k3s"
+      - task: k3s:stop
+      - sudo rm -rf /var/lib/rancher/k3s
+      - sudo rm -rf /etc/rancher
+      - sudo rm -rf /var/lib/kubelet
+      - sudo rm -rf /var/lib/cni
+      - sudo rm -rf /var/run/k3s
+      - echo "k3s state wiped"
+
+  cluster:reset:
+    desc: Reset k3s and re-bootstrap cluster from Git (recommended)
+    cmds:
+      - task: k3s:reset
+        vars:
+          CLI_ARGS: reset-k3s
+      - task: nixos:switch
+      - echo "Cluster reset and re-bootstrapped"
+
+  lab:reset:
+    desc: FULL LAB RESET (k3s wipe + nixos rebuild + reboot)
+    cmds:
+      - task: k3s:reset
+        vars:
+          CLI_ARGS: reset-k3s
+      - sudo nixos-rebuild boot --flake {{.FLAKE}}
+      - echo "Rebooting into fresh system"
+      - sudo reboot

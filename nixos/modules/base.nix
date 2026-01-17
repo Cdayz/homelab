@@ -14,6 +14,7 @@
     wget
     age
     sops
+    go-task
   ];
 
   services.journald.extraConfig = ''
