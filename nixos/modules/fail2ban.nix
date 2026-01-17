@@ -13,9 +13,7 @@
     jails = {
       sshd = {
         enabled = true;
-        port = "ssh";
-        filter = "sshd";
-        logpath = "/var/log/auth.log";
+        backend = "systemd";
       };
     };
   };
