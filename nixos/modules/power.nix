@@ -1,18 +1,16 @@
 { ... }:
 
 {
-  services.logind = {
-    lidSwitch = "ignore";
-    lidSwitchDocked = "ignore";
-    lidSwitchExternalPower = "ignore";
+  services.logind.settings.Login = {
+    IdleAction = "ignore";
+    IdleActionSec = 0;
 
-    powerKey = "ignore";
-    powerKeyLongPress = "ignore";
+    HandlePowerKey = "ignore";
+    HandlePowerKeyLongPress = "ignore";
 
-    settings.Login = {
-      IdleAction = "ignore";
-      IdleActionSec = 0;
-    };
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchDocked = "ignore";
+    HandleLidSwitchExternalPower = "ignore";
   };
 
   # Полностью отключаем sleep/suspend/hibernate targets
