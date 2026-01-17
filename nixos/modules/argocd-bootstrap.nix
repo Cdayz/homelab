@@ -12,18 +12,24 @@ in
 
     serviceConfig = {
       Type = "oneshot";
-      Environment = "KUBECONFIG=${kubeconfig}";
+
       ExecStart = ''
-        set -euo pipefail
+        ${pkgs.runtimeShell} -c '
+          set -euo pipefail
 
-        echo "Waiting for Kubernetes API..."
-        until ${pkgs.kubectl}/bin/kubectl version --short; do
-          sleep 5
-        done
+          echo "Waiting for Kubernetes API..."
+          until ${pkgs.kubectl}/bin/kubectl \
+            --kubeconfig=${kubeconfig} \
+            version --short; do
+            sleep 5
+          done
 
-        echo "Applying ArgoCD bootstrap manifests..."
-        ${pkgs.kubectl}/bin/kubectl apply \
-          -k ${../../cluster/bootstrap}
+          echo "Applying ArgoCD bootstrap manifests..."
+          ${pkgs.kubectl}/bin/kubectl \
+            --kubeconfig=${kubeconfig} \
+            apply -k ${../../cluster/bootstrap} \
+            --validate=false
+        '
       '';
     };
   };
