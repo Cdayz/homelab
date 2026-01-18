@@ -3,9 +3,6 @@
 ## Stack
 
 - NixOS
-- k3s
-- ArgoCD
-- GitOps
 
 ## Bootstrap
 

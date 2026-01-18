@@ -10,13 +10,6 @@ tasks:
     cmds:
       - task --list
 
-  status:
-    desc: Show k3s and ArgoCD status
-    cmds:
-      - sudo systemctl status k3s --no-pager || true
-      - sudo systemctl status argocd-bootstrap --no-pager || true
-      - sudo kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml get pods -A || true
-
   nixos:switch:
     desc: Apply NixOS configuration (nixos-rebuild switch)
     cmds:

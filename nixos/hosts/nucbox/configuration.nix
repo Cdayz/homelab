@@ -4,17 +4,11 @@
   imports = [
     ./hardware-configuration.nix
 
-    ../../modules/base.nix
-    ../../modules/users.nix
-    ../../modules/ssh.nix
-    ../../modules/wifi.nix
-    ../../modules/firewall.nix
-    ../../modules/fail2ban.nix
-    ../../modules/power.nix
-    ../../modules/directories.nix
-    ../../modules/k3s.nix
-    ../../modules/secrets.nix
-    ../../modules/argocd-bootstrap.nix
+    ../../modules/secrets
+    ../../modules/system
+    ../../modules/network
+    ../../modules/services
+    ../../modules/users
   ];
 
   networking.hostName = "nucbox";
@@ -22,13 +16,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  services.xserver.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.desktopManager.gnome.enable = true;
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+  services.xserver.enable = false;
+  services.displayManager.gdm.enable = false;
+  services.desktopManager.gnome.enable = false;
 
   system.stateVersion = "25.11";
 }

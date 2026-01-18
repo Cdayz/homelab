@@ -9,6 +9,5 @@
     ];
 
     logRefusedConnections = true;
-    trustedInterfaces = [ "cni+" ];
   };
 }
