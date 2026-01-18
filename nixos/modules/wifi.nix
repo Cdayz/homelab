@@ -4,7 +4,7 @@
 
   sops.secrets."wifi/psk" = {
     sopsFile = ../../secrets/wifi.yaml;
-    key = "PSK";
+    key = "psk";
     owner = "root";
     group = "root";
     mode = "0400";
@@ -22,7 +22,6 @@
         id = "wifi-home";
         type = "wifi";
         autoconnect = true;
-        autoconnect-priority = 10;
         permissions = "";
         interface-name = "wlp2s0";
       };
@@ -35,14 +34,12 @@
 
       wifi-security = {
         key-mgmt = "wpa-psk";
-        psk = "$PSK";
+        psk-file = "@${config.sops.secrets."wifi/psk".path}";
       };
 
       ipv4.method = "auto";
       ipv6.method = "ignore";
     };
   };
-
-  systemd.services.NetworkManager.serviceConfig.EnvironmentFile = config.sops.secrets."wifi/psk".path;
 
 }
