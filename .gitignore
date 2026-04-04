@@ -1,6 +1,0 @@
-# SOPS / age
-*.agekey
-key.txt
-
-# Local kube configs
-.kube/
