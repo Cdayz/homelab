@@ -1,0 +1,40 @@
+- name: Install filesystem tools
+  ansible.builtin.apt:
+    name:
+      - e2fsprogs
+      - xfsprogs
+    state: present
+    update_cache: true
+
+- name: Ensure mountpoint exists
+  ansible.builtin.file:
+    path: "{{ storage_mountpoint }}"
+    state: directory
+    mode: "0755"
+
+- name: Create filesystem on storage device
+  community.general.filesystem:
+    dev: "{{ storage_data_device }}"
+    fstype: "{{ storage_filesystem }}"
+  when: storage_create_filesystem | bool
+
+- name: Mount storage device
+  ansible.posix.mount:
+    path: "{{ storage_mountpoint }}"
+    src: "{{ storage_data_device }}"
+    fstype: "{{ storage_filesystem }}"
+    opts: "{{ storage_mount_opts }}"
+    state: mounted
+
+- name: Create storage directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ storage_mountpoint }}/docker"
+    - "{{ storage_mountpoint }}/nomad"
+    - "{{ storage_mountpoint }}/volumes"
+    - "{{ storage_mountpoint }}/volumes/shared"
+    - "{{ storage_mountpoint }}/volumes/media"
+    - "{{ storage_mountpoint }}/volumes/backups"

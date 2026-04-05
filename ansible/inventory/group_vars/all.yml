@@ -42,6 +42,18 @@ base_packages:
   - nftables
   - net-tools
 
+apt_force_ipv4: true
+apt_retries: 5
+apt_timeout: 20
+apt_pipeline_depth: 0
+
+apt_debian_mirror: "https://mirror.yandex.ru/debian"
+apt_debian_security_mirror: "https://mirror.yandex.ru/debian-security"
+apt_components:
+  - main
+  - contrib
+  - non-free-firmware
+
 unattended_upgrade_origins:
   - "origin=Debian,codename=${distro_codename},label=Debian"
   - "origin=Debian,codename=${distro_codename},label=Debian-Security"
@@ -138,3 +150,14 @@ network_bridge_use_dhcp: true
 network_bridge_ipv6_accept_ra: false
 network_bridge_link_local_addressing: false
 network_bridge_enable_resolved: true
+
+storage_mountpoint: /srv
+storage_data_device: /dev/nvme0n1p5
+storage_filesystem: ext4
+
+storage_create_filesystem: false
+storage_mount_opts: "defaults,noatime"
+
+docker_data_root: "{{ storage_mountpoint }}/docker"
+docker_repo_base_url: "https://mirror.yandex.ru/mirrors/download.docker.com/linux/debian/"
+

@@ -1,0 +1,5 @@
+Acquire::Retries "{{ apt_retries }}";
+Acquire::http::Timeout "{{ apt_timeout }}";
+Acquire::https::Timeout "{{ apt_timeout }}";
+Acquire::http::Pipeline-Depth "{{ apt_pipeline_depth }}";
+Acquire::ForceIPv4 "true";

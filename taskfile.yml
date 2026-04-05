@@ -12,3 +12,34 @@ tasks:
     dir: ./ansible
     cmds:
       - uv run ansible-playbook -i inventory/hosts.yml playbooks/{{.CLI_ARGS}}.yml -K
+
+  bootstrap:
+    desc: "Bootstrap base OS packages and users"
+    cmds:
+      - task: ansible-playbook
+        vars: { CLI_ARGS: bootstrap }
+
+  hardening:
+    desc: "Apply host hardening"
+    cmds:
+      - task: ansible-playbook
+        vars: { CLI_ARGS: hardening }
+
+  networking:
+    desc: "Apply network bridge configuration"
+    cmds:
+      - task: ansible-playbook
+        vars: { CLI_ARGS: networking }
+
+  runtime:
+    desc: "Install storage, docker and nomad"
+    cmds:
+      - task: ansible-playbook
+        vars: { CLI_ARGS: runtime }
+
+  docker-status:
+    desc: "Check docker status"
+    dir: ./ansible
+    cmds:
+      - ssh nikita@192.168.1.43 'systemctl status docker --no-pager'
+
