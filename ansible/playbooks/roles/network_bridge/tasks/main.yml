@@ -1,0 +1,78 @@
+- name: Validate bridge member interfaces list
+  ansible.builtin.assert:
+    that:
+      - network_bridge_members | length >= 2
+    fail_msg: "network_bridge_members must contain at least 2 interfaces"
+
+- name: Validate static address settings when DHCP is disabled
+  ansible.builtin.assert:
+    that:
+      - network_bridge_static_address | length > 0
+    fail_msg: "network_bridge_static_address must be set when network_bridge_use_dhcp=false"
+  when: not network_bridge_use_dhcp
+
+- name: Ensure systemd-networkd config directory exists
+  ansible.builtin.file:
+    path: "{{ network_bridge_networkd_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Install bridge netdev config
+  ansible.builtin.template:
+    src: bridge.netdev.j2
+    dest: "{{ network_bridge_networkd_dir }}/10-{{ network_bridge_name }}.netdev"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart systemd-networkd
+
+- name: Install bridge slave interface configs
+  ansible.builtin.template:
+    src: bridge-slave.network.j2
+    dest: "{{ network_bridge_networkd_dir }}/11-{{ item }}.network"
+    owner: root
+    group: root
+    mode: "0644"
+  loop: "{{ network_bridge_members }}"
+  vars:
+    interface_name: "{{ item }}"
+  notify: Restart systemd-networkd
+
+- name: Disable ifupdown networking service
+  ansible.builtin.systemd:
+    name: networking
+    enabled: false
+    state: stopped
+
+- name: Mask networking service (prevent accidental start)
+  ansible.builtin.systemd:
+    name: networking
+    masked: true
+
+- name: Install bridge master config
+  ansible.builtin.template:
+    src: bridge-master.network.j2
+    dest: "{{ network_bridge_networkd_dir }}/20-{{ network_bridge_name }}.network"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart systemd-networkd
+
+- name: Enable systemd-networkd
+  ansible.builtin.systemd:
+    name: systemd-networkd
+    enabled: true
+    state: started
+
+- name: Configure resolv.conf
+  ansible.builtin.copy:
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      {% for ns in network_nameservers %}
+      nameserver {{ ns }}
+      {% endfor %}
