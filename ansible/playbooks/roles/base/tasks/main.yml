@@ -7,6 +7,16 @@
     - /etc/apt/apt.conf.d
     - /etc/apt/sources.list.d
 
+- name: Install base apt/python dependencies
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - python3-debian
+    state: present
+    update_cache: true
+
 - name: Render apt tuning config
   ansible.builtin.template:
     src: 90homelab-apt.conf.j2
@@ -15,18 +25,35 @@
     group: root
     mode: "0644"
 
-- name: Render Debian sources
-  ansible.builtin.template:
-    src: debian.sources.j2
-    dest: /etc/apt/sources.list.d/debian.sources
-    owner: root
-    group: root
-    mode: "0644"
+- name: Configure Debian mirror
+  ansible.builtin.deb822_repository:
+    name: debian
+    types: [deb]
+    uris: ["{{ apt_debian_mirror }}"]
+    suites:
+      - "{{ ansible_facts['distribution_release'] }}"
+      - "{{ ansible_facts['distribution_release'] }}-updates"
+    components: "{{ apt_components }}"
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
+
+- name: Configure Debian Security mirror
+  ansible.builtin.deb822_repository:
+    name: debian
+    types: [deb]
+    uris: ["{{ apt_debian_security_mirror }}"]
+    suites:
+      - "{{ ansible_facts['distribution_release'] }}-security"
+    components: "{{ apt_components }}"
+    signed_by: /usr/share/keyrings/debian-archive-keyring.gpg
 
 - name: Remove legacy apt sources.list
   ansible.builtin.file:
     path: /etc/apt/sources.list
     state: absent
+
+- name: Update apt cache after repository changes
+  ansible.builtin.apt:
+    update_cache: true
 
 - name: Update apt cache
   ansible.builtin.apt:

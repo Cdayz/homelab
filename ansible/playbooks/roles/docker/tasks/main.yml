@@ -1,44 +1,45 @@
-- name: Install prerequisites
+- name: Remove conflicting Docker-related distro packages
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - docker-compose
+      - docker-doc
+      - podman-docker
+      - containerd
+      - runc
+    state: absent
+    purge: true
+  ignore_errors: true
+
+- name: Install Docker repository prerequisites
   ansible.builtin.apt:
     name:
       - ca-certificates
       - curl
       - gnupg
-      - apt-transport-https
+      - python3-debian
     state: present
     update_cache: true
 
-- name: Ensure apt keyrings dir exists
-  ansible.builtin.file:
-    path: /etc/apt/keyrings
-    state: directory
-    mode: "0755"
-
-- name: Download Docker GPG key
-  ansible.builtin.get_url:
-    url: "{{ docker_repo_base_url }}/gpg"
-    dest: /etc/apt/keyrings/docker.asc
-    mode: "0644"
-
-- name: Add Docker apt repository
-  ansible.builtin.apt_repository:
-    repo: >-
-      deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc]
-      {{ docker_repo_base_url }}
-      {{ ansible_facts['distribution_release'] }} stable
-    filename: docker
+- name: Configure Docker apt repository
+  ansible.builtin.deb822_repository:
+    name: docker
     state: present
+    types: [deb]
+    uris: ["{{ docker_repo_base_url }}"]
+    suites: ["{{ ansible_facts['distribution_release'] }}"]
+    components: [stable]
+    architectures: ["amd64"]
+    signed_by: "{{ docker_repo_base_url }}/gpg"
+
+- name: Update apt cache after Docker repository changes
+  ansible.builtin.apt:
+    update_cache: true
 
 - name: Install Docker packages
   ansible.builtin.apt:
-    name:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
+    name: "{{ docker_packages }}"
     state: present
-    update_cache: true
 
 - name: Ensure /etc/docker exists
   ansible.builtin.file:
@@ -50,6 +51,8 @@
   ansible.builtin.template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
+    owner: root
+    group: root
     mode: "0644"
   notify: restart docker
 
@@ -60,7 +63,7 @@
     append: true
   loop: "{{ admin_users }}"
 
-- name: Enable docker
+- name: Enable and start docker
   ansible.builtin.systemd:
     name: docker
     enabled: true

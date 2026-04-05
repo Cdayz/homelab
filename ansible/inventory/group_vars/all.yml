@@ -160,4 +160,9 @@ storage_mount_opts: "defaults,noatime"
 
 docker_data_root: "{{ storage_mountpoint }}/docker"
 docker_repo_base_url: "https://mirror.yandex.ru/mirrors/download.docker.com/linux/debian/"
-
+docker_packages:
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
