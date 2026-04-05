@@ -166,3 +166,27 @@ docker_packages:
   - containerd.io
   - docker-buildx-plugin
   - docker-compose-plugin
+
+nomad_version: "1.11.3"
+nomad_region: global
+nomad_datacenter: dc1
+nomad_bind_addr: "127.0.0.1"
+nomad_advertise_addr: "127.0.0.1"
+nomad_data_dir: "{{ storage_mountpoint }}/nomad"
+nomad_plugin_dir: /opt/nomad/plugins
+nomad_binary_base_url: "https://mirror.yandex.ru/mirrors/releases.hashicorp.com"
+
+nomad_enable_server: true
+nomad_enable_client: true
+nomad_bootstrap_expect: 1
+
+nomad_host_volumes:
+  shared:
+    path: "{{ storage_mountpoint }}/volumes/shared"
+    read_only: false
+  media:
+    path: "{{ storage_mountpoint }}/volumes/media"
+    read_only: false
+  backups:
+    path: "{{ storage_mountpoint }}/volumes/backups"
+    read_only: false

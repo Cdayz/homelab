@@ -1,0 +1,46 @@
+- name: Set Nomad archive name
+  ansible.builtin.set_fact:
+    nomad_archive_name: >-
+      nomad_{{ nomad_version }}_linux_amd64.zip
+
+- name: Download Nomad archive
+  ansible.builtin.get_url:
+    url: "{{ nomad_binary_base_url }}/nomad/{{ nomad_version }}/{{ nomad_archive_name }}"
+    dest: "/tmp/{{ nomad_archive_name }}"
+    mode: "0644"
+
+- name: Download SHA256SUMS
+  ansible.builtin.get_url:
+    url: "{{ nomad_binary_base_url }}/nomad/{{ nomad_version }}/nomad_{{ nomad_version }}_SHA256SUMS"
+    dest: "/tmp/nomad_{{ nomad_version }}_SHA256SUMS"
+    mode: "0644"
+
+- name: Verify Nomad archive checksum
+  ansible.builtin.shell: |
+    set -euo pipefail
+    grep "{{ nomad_archive_name }}" "nomad_{{ nomad_version }}_SHA256SUMS" | sha256sum -c -
+  args:
+    chdir: /tmp
+    executable: /bin/bash
+
+- name: Unpack Nomad binary
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ nomad_archive_name }}"
+    dest: /usr/local/bin
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure nomad is executable
+  ansible.builtin.file:
+    path: /usr/local/bin/nomad
+    mode: "0755"
+
+- name: Cleanup Nomad download artifacts
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/{{ nomad_archive_name }}"
+    - "/tmp/nomad_{{ nomad_version }}_SHA256SUMS"
