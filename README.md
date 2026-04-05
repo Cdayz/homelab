@@ -1,12 +1,18 @@
-# Homelab
+# HomeLab
 
-## Stack
+Репозиторий для Infrastructure-as-a-Code конфигурации домашней лаборатории.
 
-- NixOS
+## Особенности
 
-## Bootstrap
+- Everything as a Code - храним все в виде кода и конфигураций в репозитории
+- Разделение на:
+    - control-plane - личное устройство с которого управляется homelab
+    - data-plane - мини-пк выступающий в роли homelab сервера
 
-1. Install NixOS
-2. Copy age key to /var/lib/sops-nix/key.txt
-3. git clone https://github.com/Cdayz/homelab
-4. nixos-rebuild switch --flake .#nucbox
+### Пока хз куда записать
+
+- Pangolin как Identity Aware Proxy для сервисов
+- Nomad как оркестратор процессов на сервере
+- Grafana в качестве дашбордов и Prometheus в качестве мониторинга и метрик
+
+- Ethernet bridge в homelab сервере - 2 порта ethernet, один на вход, второй для доступа остальных устройств к интернету

@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+  ansible-ping:
+    desc: "Ping all inventory hosts, check they are reachable"
+    dir: ./ansible
+    cmds:
+      - uv run ansible all -i inventory/hosts.yml -m ping -K
+
+  ansible-bootstrap:
+    desc: "Apply bootstrap for all hosts"
+    dir: ./ansible
+    cmds:
+      - uv run ansible-playbook -i inventory/hosts.yml playbooks/bootstrap.yml -K
+
+  ansible-hardening:
+    desc: "Apply hadening for all hosts"
+    dir: ./ansible
+    cmds:
+      - uv run ansible-playbook -i inventory/hosts.yml playbooks/hardening.yml -K
