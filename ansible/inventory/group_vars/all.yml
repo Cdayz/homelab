@@ -40,11 +40,56 @@ base_packages:
   - unattended-upgrades
   - apt-listchanges
   - nftables
+  - net-tools
 
 unattended_upgrade_origins:
   - "origin=Debian,codename=${distro_codename},label=Debian"
   - "origin=Debian,codename=${distro_codename},label=Debian-Security"
   - "origin=Debian,codename=${distro_codename}-security,label=Debian-Security"
+
+# nftables_ruleset: |
+#   table inet filter {
+#     chain input {
+#       type filter hook input priority 0;
+#       policy drop;
+
+#       iif "lo" accept
+#       ct state established,related accept
+#       ct state invalid drop
+
+#       ip protocol icmp accept
+#       ip6 nexthdr icmpv6 accept
+
+#       tcp dport {{ ssh_port }} ct state new accept
+#     }
+
+#     chain forward {
+#       type filter hook forward priority 0;
+#       policy drop;
+
+#       ct state established,related accept
+#     }
+
+#     chain output {
+#       type filter hook output priority 0;
+#       policy accept;
+#     }
+#   }
+
+#   table bridge filter {
+#     chain forward {
+#       type filter hook forward priority 0;
+#       policy drop;
+
+#       ether type arp accept
+#       ip6 nexthdr icmpv6 accept
+#       udp sport 67 udp dport 68 accept
+#       udp sport 68 udp dport 67 accept
+
+#       ct state established,related accept
+#       accept
+#     }
+#   }
 
 nftables_ruleset: |
   table inet filter {
@@ -65,6 +110,8 @@ nftables_ruleset: |
     chain forward {
       type filter hook forward priority 0;
       policy drop;
+
+      ct state established,related accept
     }
 
     chain output {
@@ -73,6 +120,21 @@ nftables_ruleset: |
     }
   }
 
+  table bridge filter {
+    chain forward {
+      type filter hook forward priority 0;
+      policy accept;
+    }
+  }
+
 fail2ban_bantime: "1h"
 fail2ban_findtime: "10m"
 fail2ban_maxretry: 5
+
+network_bridge_name: br0
+network_bridge_members: [enp3s0, eno1]
+
+network_bridge_use_dhcp: true
+network_bridge_ipv6_accept_ra: false
+network_bridge_link_local_addressing: false
+network_bridge_enable_resolved: true

@@ -7,14 +7,8 @@ tasks:
     cmds:
       - uv run ansible all -i inventory/hosts.yml -m ping -K
 
-  ansible-bootstrap:
-    desc: "Apply bootstrap for all hosts"
+  ansible-playbook:
+    desc: "Apply playbook for all hosts"
     dir: ./ansible
     cmds:
-      - uv run ansible-playbook -i inventory/hosts.yml playbooks/bootstrap.yml -K
-
-  ansible-hardening:
-    desc: "Apply hadening for all hosts"
-    dir: ./ansible
-    cmds:
-      - uv run ansible-playbook -i inventory/hosts.yml playbooks/hardening.yml -K
+      - uv run ansible-playbook -i inventory/hosts.yml playbooks/{{.CLI_ARGS}}.yml -K
