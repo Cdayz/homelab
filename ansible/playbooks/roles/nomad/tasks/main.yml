@@ -23,6 +23,7 @@
     - { path: "{{ nomad_data_dir }}/alloc", owner: "root", group: "root", mode: "0755" }
     - { path: "{{ nomad_data_dir }}/alloc_mounts", owner: "root", group: "root", mode: "0755" }
     - { path: "{{ nomad_plugin_dir }}", owner: "root", group: "root", mode: "0755" }
+    - { path: "{{ nomad_jobs_dir }}", owner: "root", group: "root", mode: "0755" }
 
 - name: Render nomad config
   ansible.builtin.template:
