@@ -17,25 +17,25 @@ tasks:
     desc: "Bootstrap base OS packages and users"
     cmds:
       - task: ansible-playbook
-        vars: { CLI_ARGS: bootstrap }
+        vars: { CLI_ARGS: 01-bootstrap }
 
   hardening:
     desc: "Apply host hardening"
     cmds:
       - task: ansible-playbook
-        vars: { CLI_ARGS: hardening }
+        vars: { CLI_ARGS: 02-hardening }
 
   networking:
     desc: "Apply network bridge configuration"
     cmds:
       - task: ansible-playbook
-        vars: { CLI_ARGS: networking }
+        vars: { CLI_ARGS: 03-networking }
 
   runtime:
     desc: "Install storage, docker and nomad"
     cmds:
       - task: ansible-playbook
-        vars: { CLI_ARGS: runtime }
+        vars: { CLI_ARGS: 04-runtime }
 
   docker-status:
     desc: "Check docker status"
