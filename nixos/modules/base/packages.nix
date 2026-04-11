@@ -12,6 +12,7 @@
     sops
     go-task
     fish
+    jq
   ];
   programs.fish.enable = true;
 }

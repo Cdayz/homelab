@@ -13,4 +13,6 @@
     ./power.nix
     ./docker.nix
   ];
+
+  nixpkgs.config.allowUnfree = true;
 }
