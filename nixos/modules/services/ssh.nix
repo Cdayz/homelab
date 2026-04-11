@@ -3,7 +3,6 @@
 {
   services.openssh = {
     enable = true;
-    openFirewall = true;
     ports = [ 22 ];
 
     settings = {
@@ -11,20 +10,21 @@
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
       ChallengeResponseAuthentication = false;
+      PermitEmptyPasswords = "no";
 
       X11Forwarding = false;
+      AllowAgentForwarding = false;
       AllowTcpForwarding = "yes";
-      AllowAgentForwarding = "no";
+      PermitUserEnvironment = "no";
       UseDns = false;
+      UsePAM = true;
 
       MaxAuthTries = 3;
+      MaxSessions = 4;
+      MaxStartups = "10:30:60";
       LoginGraceTime = "30s";
 
-      UsePAM = true;
+      AllowUsers = [ "nikita" ];
     };
-
-    extraConfig = ''
-      AllowUsers nikita
-    '';
   };
 }
