@@ -1,15 +1,27 @@
 version: '3'
 
+vars:
+  NUCBOX_USER: nikita
+  NUCBOX_HOST: 192.168.1.136
+
 tasks:
   rebuild-nucbox:
-    vars:
-      NUCBOX_USER: nikita
-      NUCBOX_HOST: 192.168.1.127
     dir: nixos
     cmds:
       - |
         nix run nixpkgs#nixos-rebuild -- \
             switch \
+            --flake .#nucbox \
+            --target-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
+            --build-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
+            --sudo
+
+  test-rebuild-nucbox:
+    dir: nixos
+    cmds:
+      - |
+        nix run nixpkgs#nixos-rebuild -- \
+            test \
             --flake .#nucbox \
             --target-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
             --build-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
