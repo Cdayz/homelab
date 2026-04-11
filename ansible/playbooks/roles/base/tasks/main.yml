@@ -27,7 +27,7 @@
 
 - name: Configure Debian mirror
   ansible.builtin.deb822_repository:
-    name: debian
+    name: debian-mirror
     types: [deb]
     uris: ["{{ apt_debian_mirror }}"]
     suites:
@@ -38,7 +38,7 @@
 
 - name: Configure Debian Security mirror
   ansible.builtin.deb822_repository:
-    name: debian
+    name: debian-sec-mirror
     types: [deb]
     uris: ["{{ apt_debian_security_mirror }}"]
     suites:

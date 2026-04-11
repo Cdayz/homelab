@@ -37,6 +37,12 @@ tasks:
       - task: ansible-playbook
         vars: { CLI_ARGS: 04-runtime }
 
+  auth-proxy:
+    desc: "Install identity aware proxy (Pangolin)"
+    cmds:
+      - task: ansible-playbook
+        vars: { CLI_ARGS: 05-auth-proxy }
+
   docker-status:
     desc: "Check docker status"
     dir: ./ansible
