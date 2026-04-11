@@ -1,56 +1,15 @@
 version: '3'
 
 tasks:
-  ansible-ping:
-    desc: "Ping all inventory hosts, check they are reachable"
-    dir: ./ansible
+  rebuild-nucbox:
+    vars:
+      NUCBOX_USER: nikita
+      NUCBOX_HOST: 192.168.1.127
     cmds:
-      - uv run ansible all -i inventory/hosts.yml -m ping -K
-
-  ansible-playbook:
-    desc: "Apply playbook for all hosts"
-    dir: ./ansible
-    cmds:
-      - uv run ansible-playbook -i inventory/hosts.yml playbooks/{{.CLI_ARGS}}.yml -K
-
-  bootstrap:
-    desc: "Bootstrap base OS packages and users"
-    cmds:
-      - task: ansible-playbook
-        vars: { CLI_ARGS: 01-bootstrap }
-
-  hardening:
-    desc: "Apply host hardening"
-    cmds:
-      - task: ansible-playbook
-        vars: { CLI_ARGS: 02-hardening }
-
-  networking:
-    desc: "Apply network bridge configuration"
-    cmds:
-      - task: ansible-playbook
-        vars: { CLI_ARGS: 03-networking }
-
-  runtime:
-    desc: "Install storage, docker and nomad"
-    cmds:
-      - task: ansible-playbook
-        vars: { CLI_ARGS: 04-runtime }
-
-  auth-proxy:
-    desc: "Install identity aware proxy (Pangolin)"
-    cmds:
-      - task: ansible-playbook
-        vars: { CLI_ARGS: 05-auth-proxy }
-
-  docker-status:
-    desc: "Check docker status"
-    dir: ./ansible
-    cmds:
-      - ssh nikita@192.168.1.43 'systemctl status docker --no-pager'
-
-  nomad-status:
-    desc: "Check nomad status"
-    dir: ./ansible
-    cmds:
-      - ssh nikita@192.168.1.43 'systemctl status nomad --no-pager'
+      - |
+        nix run nixpkgs#nixos-rebuild -- \
+            switch \
+            --flake .#nucbox \
+            --target-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
+            --build-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
+            --sudo
