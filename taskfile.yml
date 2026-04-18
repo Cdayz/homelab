@@ -5,8 +5,33 @@ vars:
   NUCBOX_HOST: 192.168.1.136
 
 tasks:
-  rebuild-nucbox:
+  sops:encrypt:
+    desc: Encrypt raw secret files
     dir: nixos
+    cmds:
+      - |
+        set -euo pipefail
+        find ./secrets -maxdepth 1 -type f -name '*.raw.yaml' | while read -r raw; do
+          enc="${raw%.raw.yaml}.yaml"
+          echo "encrypting $raw -> $enc"
+          sops encrypt --input-type yaml --output-type yaml "$raw" > "$enc"
+        done
+
+  sops:decrypt:
+    desc: Decrypt tracked secret files into local raw copies
+    dir: nixos
+    cmds:
+      - |
+        set -euo pipefail
+        find ./secrets -maxdepth 1 -type f -name '*.yaml' ! -name '*.raw.yaml' | while read -r enc; do
+          raw="${enc%.yaml}.raw.yaml"
+          echo "decrypting $enc -> $raw"
+          sops decrypt --input-type yaml --output-type yaml "$enc" > "$raw"
+        done
+
+  nucbox:rebuild:
+    dir: nixos
+    deps: [sops:encrypt]
     cmds:
       - |
         nix run nixpkgs#nixos-rebuild -- \
@@ -16,8 +41,9 @@ tasks:
             --build-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
             --sudo
 
-  test-rebuild-nucbox:
+  nucbox:rebuild:test:
     dir: nixos
+    deps: [sops:encrypt]
     cmds:
       - |
         nix run nixpkgs#nixos-rebuild -- \

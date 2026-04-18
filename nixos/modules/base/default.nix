@@ -12,6 +12,7 @@
     ./bootloader.nix
     ./power.nix
     ./docker.nix
+    ./sops.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
