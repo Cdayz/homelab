@@ -3,31 +3,22 @@ version: '3'
 vars:
   NUCBOX_USER: nikita
   NUCBOX_HOST: 192.168.1.136
+  NUCBOX_NOMAD_JOBS_DIR: /home/{{ .NUCBOX_USER }}/nomad-jobs
 
 tasks:
+  auth:generate-user:
+    cmds:
+      - docker run --rm -it authelia/authelia:latest authelia crypto hash generate argon2
+
   sops:encrypt:
     desc: Encrypt raw secret files
-    dir: nixos
     cmds:
-      - |
-        set -euo pipefail
-        find ./secrets -maxdepth 1 -type f -name '*.raw.yaml' | while read -r raw; do
-          enc="${raw%.raw.yaml}.yaml"
-          echo "encrypting $raw -> $enc"
-          sops encrypt --input-type yaml --output-type yaml "$raw" > "$enc"
-        done
+      - PYTHONPATH=. uv run scripts/encrypt-secrets.py
 
   sops:decrypt:
     desc: Decrypt tracked secret files into local raw copies
-    dir: nixos
     cmds:
-      - |
-        set -euo pipefail
-        find ./secrets -maxdepth 1 -type f -name '*.yaml' ! -name '*.raw.yaml' | while read -r enc; do
-          raw="${enc%.yaml}.raw.yaml"
-          echo "decrypting $enc -> $raw"
-          sops decrypt --input-type yaml --output-type yaml "$enc" > "$raw"
-        done
+      - PYTHONPATH=. uv run scripts/decrypt-secrets.py
 
   nucbox:rebuild:
     dir: nixos
@@ -52,3 +43,33 @@ tasks:
             --target-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
             --build-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
             --sudo
+
+  nomad:render:
+    desc: Render nomad job directory
+    cmds:
+      - PYTHONPATH=. uv run scripts/render-nomad-job.py --job-name {{ .CLI_ARGS }} --remote-jobs-dir {{ .NUCBOX_NOMAD_JOBS_DIR }}
+
+  nucbox:nomad:plan:
+    desc: Render and plan nomad job
+    cmds:
+      - task: nomad:render
+        vars:
+          CLI_ARGS: "{{ .CLI_ARGS }}"
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "rm -rf {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }} && mkdir -p {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
+      - rsync -a nomad/render/{{ .CLI_ARGS }}/ {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}:{{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job plan {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/job.hcl"
+
+  nucbox:nomad:deploy:
+    desc: Render and deploy nomad job
+    cmds:
+      - task: nomad:render
+        vars:
+          CLI_ARGS: "{{ .CLI_ARGS }}"
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "rm -rf {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }} && mkdir -p {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
+      - rsync -a nomad/render/{{ .CLI_ARGS }}/ {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}:{{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job run {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/job.hcl"
+
+  nucbox:nomad:stop:
+    desc: Stop nomad job
+    cmds:
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job stop {{ .CLI_ARGS }}"

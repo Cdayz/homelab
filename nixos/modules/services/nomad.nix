@@ -23,8 +23,6 @@
     "z /var/lib/nomad/alloc_mounts 0755 nomad nomad -"
 
     "d /var/lib/nomad-volumes 0755 root root -"
-    "d /var/lib/nomad-volumes/tinyauth 0755 root root -"
-    "d /var/lib/nomad-volumes/tinyauth/data 0755 root root -"
   ];
 
   environment.systemPackages = with pkgs; [
