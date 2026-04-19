@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://www.authelia.com/schemas/latest/json-schema/user-database.json
+
+users:
+  nikita:
+    disabled: false
+    displayname: "Nikita"
+    password: "$argon2id$v=19$m=65536,t=3,p=4$Ua8dP5IE7dyuZvwgS3zrPg$Wyc9zqagD9k2igo5T2/UlDE/LRZSHVu9zx1K5CBlkNg"
+    email: "nikita@cdayz.ru"
+    groups:
+      - "admin"
+      - "family"

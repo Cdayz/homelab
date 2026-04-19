@@ -1,0 +1,46 @@
+# yaml-language-server: $schema=https://www.authelia.com/schemas/latest/json-schema/configuration.json
+
+theme: auto
+
+log:
+  level: info
+
+server:
+  address: tcp://0.0.0.0:9091
+  endpoints:
+    authz:
+      forward-auth:
+        implementation: ForwardAuth
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+    watch: false
+
+access_control:
+  default_policy: deny
+  rules:
+    - domain: "auth.cdayz.ru"
+      policy: bypass
+
+    - domain: "nomad.cdayz.ru"
+      subject:
+        - "group:admin"
+      policy: one_factor
+
+session:
+  cookies:
+    - domain: "cdayz.ru"
+      authelia_url: "https://auth.cdayz.ru"
+      default_redirection_url: "https://home.cdayz.ru"
+
+storage:
+  local:
+    path: /data/db.sqlite3
+
+notifier:
+  filesystem:
+    filename: /data/notification.txt
+
+identity_validation:
+  reset_password: {}
