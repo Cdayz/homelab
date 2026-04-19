@@ -1,11 +1,30 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
+  users.groups.nomad = {};
+
+  users.users.nomad = {
+    isSystemUser = true;
+    group = "nomad";
+    extraGroups = [ "docker" ];
+  };
 
   systemd.tmpfiles.rules = [
     "d /var/lib/nomad 0755 nomad nomad -"
+    "d /var/lib/nomad/server 0755 nomad nomad -"
+    "d /var/lib/nomad/client 0755 nomad nomad -"
     "d /var/lib/nomad/alloc 0755 nomad nomad -"
     "d /var/lib/nomad/alloc_mounts 0755 nomad nomad -"
+
+    "z /var/lib/nomad 0755 nomad nomad -"
+    "z /var/lib/nomad/server 0755 nomad nomad -"
+    "z /var/lib/nomad/client 0755 nomad nomad -"
+    "z /var/lib/nomad/alloc 0755 nomad nomad -"
+    "z /var/lib/nomad/alloc_mounts 0755 nomad nomad -"
+
+    "d /var/lib/nomad-volumes 0755 root root -"
+    "d /var/lib/nomad-volumes/tinyauth 0755 root root -"
+    "d /var/lib/nomad-volumes/tinyauth/data 0755 root root -"
   ];
 
   environment.systemPackages = with pkgs; [
@@ -41,6 +60,14 @@
 
         options = {
           "driver.docker.enable" = "true";
+          "docker.volumes.enabled" = "true";
+        };
+
+        host_network = {
+          loopback = {
+            interface = "lo";
+            cidr = "127.0.0.0/8";
+          };
         };
       };
 
@@ -56,7 +83,12 @@
         publish_node_metrics = true;
       };
     };
-
   };
 
+  systemd.services.nomad.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    StateDirectory = lib.mkForce null;
+    User = lib.mkForce "nomad";
+    Group = lib.mkForce "nomad";
+  };
 }
