@@ -55,7 +55,7 @@ tasks:
       - task: nomad:render
         vars:
           CLI_ARGS: "{{ .CLI_ARGS }}"
-      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "rm -rf {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }} && mkdir -p {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "sudo rm -rf {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }} && mkdir -p {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
       - rsync -a nomad/render/{{ .CLI_ARGS }}/ {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}:{{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/
       - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job plan {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/job.hcl"
 
@@ -65,7 +65,7 @@ tasks:
       - task: nomad:render
         vars:
           CLI_ARGS: "{{ .CLI_ARGS }}"
-      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "rm -rf {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }} && mkdir -p {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "sudo rm -rf {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }} && mkdir -p {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
       - rsync -a nomad/render/{{ .CLI_ARGS }}/ {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}:{{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/
       - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job run {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/job.hcl"
 
