@@ -13,8 +13,22 @@
     go-task
     fish
     jq
+    dnsutils
   ];
   programs.fish.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    # for container in builds support
+    "auto-allocate-uids"
+    "cgroups"
+
+    # for useful ssh
+    "nix-command"
+    "flakes"
+  ];
+
+  nix.settings.system-features = [
+    "uid-range"
+    "recursive-nix"
+  ];
 }

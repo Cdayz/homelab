@@ -10,6 +10,7 @@
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
       ChallengeResponseAuthentication = false;
+      StreamLocalBindUnlink = true;
       PermitEmptyPasswords = "no";
 
       X11Forwarding = false;
