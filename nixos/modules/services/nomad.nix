@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 
 {
-  users.groups.nomad = {};
+  users.groups.nomad = { };
 
   users.users.nomad = {
     isSystemUser = true;

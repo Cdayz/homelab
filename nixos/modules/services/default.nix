@@ -6,5 +6,6 @@
     ./fail2ban.nix
     ./nomad.nix
     ./caddy.nix
+    ./monitoring.nix
   ];
 }
