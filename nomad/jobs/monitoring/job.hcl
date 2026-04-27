@@ -113,6 +113,8 @@ job "monitoring" {
 
         volumes = [
           "${JOB_REMOTE_CONFIGS_DIR}/grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro",
+          "${JOB_REMOTE_CONFIGS_DIR}/grafana-dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml:ro",
+          "${JOB_REMOTE_CONFIGS_DIR}/dashboards:/etc/grafana/dashboards:ro",
         ]
 
         mount {
