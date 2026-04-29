@@ -126,11 +126,21 @@ job "monitoring" {
       }
 
       env {
-        GF_SERVER_ROOT_URL         = "https://grafana.cdayz.ru"
-        GF_SERVER_HTTP_PORT        = "13000"
+        GF_SERVER_ROOT_URL  = "https://grafana.cdayz.ru"
+        GF_SERVER_HTTP_PORT = "13000"
+
         GF_SECURITY_ADMIN_USER     = "admin"
         GF_SECURITY_ADMIN_PASSWORD = "admin"
+
         GF_USERS_ALLOW_SIGN_UP     = "false"
+        GF_AUTH_DISABLE_LOGIN_FORM = "true"
+        GF_AUTH_BASIC_ENABLED      = "false"
+
+        GF_AUTH_PROXY_ENABLED         = "true"
+        GF_AUTH_PROXY_HEADER_NAME     = "Remote-User"
+        GF_AUTH_PROXY_HEADER_PROPERTY = "username"
+        GF_AUTH_PROXY_AUTO_SIGN_UP    = "true"
+        GF_AUTH_PROXY_HEADERS         = "Email:Remote-Email Name:Remote-Name"
       }
 
       resources {

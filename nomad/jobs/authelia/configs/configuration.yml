@@ -28,6 +28,11 @@ access_control:
         - "group:admin"
       policy: one_factor
 
+    - domain: "grafana.cdayz.ru"
+      subject:
+        - "group:admin"
+      policy: one_factor
+
 session:
   cookies:
     - domain: "cdayz.ru"
