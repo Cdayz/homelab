@@ -1,20 +1,6 @@
 { ... }:
 
 {
-  services.prometheus.exporters.node = {
-    enable = true;
-    enabledCollectors = [
-      "systemd"
-      "processes"
-      "diskstats"
-      "filesystem"
-      "netstat"
-      "hwmon"
-    ];
-    port = 9100;
-    listenAddress = "127.0.0.1";
-  };
-
   environment.etc."alloy/config.alloy".text = ''
     loki.write "local" {
       endpoint {
@@ -41,9 +27,38 @@
       }
     }
 
+    loki.process "systemd" {
+      forward_to = [loki.write.local.receiver]
+
+      stage.match {
+        selector = "{job=\"systemd-journal\",unit=~\"sshd.service|ssh.service\"} |~ \"Failed password|Invalid user|Accepted publickey|Accepted password|authentication failure\""
+
+        stage.regex {
+          expression = ".* from (?P<source_ip>[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+).*"
+        }
+
+        stage.geoip {
+          source  = "source_ip"
+          db      = "/var/lib/geoip/GeoLite2-City.mmdb"
+          db_type = "city"
+        }
+
+        stage.labels {
+          values = {
+            geoip_country_name       = ""
+            geoip_country_code       = ""
+            geoip_continent_name     = ""
+            geoip_continent_code     = ""
+            geoip_location_latitude  = ""
+            geoip_location_longitude = ""
+          }
+        }
+      }
+    }
+
     loki.source.journal "systemd" {
       max_age       = "12h"
-      forward_to    = [loki.write.local.receiver]
+      forward_to    = [loki.process.systemd.receiver]
       relabel_rules = discovery.relabel.journal.rules
 
       labels = {
