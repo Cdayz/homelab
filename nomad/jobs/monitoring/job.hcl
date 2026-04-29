@@ -56,6 +56,7 @@ job "monitoring" {
           "--config.file=/etc/prometheus/prometheus.yml",
           "--storage.tsdb.path=/prometheus",
           "--storage.tsdb.retention.time=15d",
+          "--storage.tsdb.retention.size=10GB",
           "--web.listen-address=127.0.0.1:19090",
           "--web.enable-lifecycle",
         ]
@@ -137,6 +138,7 @@ job "monitoring" {
         GF_AUTH_BASIC_ENABLED      = "false"
 
         GF_AUTH_PROXY_ENABLED         = "true"
+        GF_AUTH_PROXY_WHITELIST       = "127.0.0.1"
         GF_AUTH_PROXY_HEADER_NAME     = "Remote-User"
         GF_AUTH_PROXY_HEADER_PROPERTY = "username"
         GF_AUTH_PROXY_AUTO_SIGN_UP    = "true"
