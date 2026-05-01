@@ -45,12 +45,12 @@
 
         stage.labels {
           values = {
-            geoip_country_name       = ""
-            geoip_country_code       = ""
-            geoip_continent_name     = ""
-            geoip_continent_code     = ""
-            geoip_location_latitude  = ""
-            geoip_location_longitude = ""
+            geoip_country_name       = "",
+            geoip_country_code       = "",
+            geoip_continent_name     = "",
+            geoip_continent_code     = "",
+            geoip_location_latitude  = "",
+            geoip_location_longitude = "",
           }
         }
       }

@@ -1,4 +1,6 @@
 {
+  services.openssh.openFirewall = false;
+
   networking.firewall = {
     enable = true;
 
@@ -6,17 +8,16 @@
     logRefusedConnections = false;
 
     allowedTCPPorts = [
-      22 # SSH
-      80 # HTTP
-      443 # HTTPS
+      80
+      443
     ];
 
-    extraInputRules = ''
-      # allow ssh from LAN
-      ip saddr 192.168.0.0/16 tcp dport 22 accept
+    extraCommands = ''
+      iptables -I nixos-fw 3 -p tcp --dport 22 -s 192.168.0.0/16 -j nixos-fw-accept
+    '';
 
-      # drop everything else to ssh
-      tcp dport 22 drop
+    extraStopCommands = ''
+      iptables -D nixos-fw -p tcp --dport 22 -s 192.168.0.0/16 -j nixos-fw-accept || true
     '';
   };
 }
