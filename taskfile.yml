@@ -10,6 +10,14 @@ tasks:
     cmds:
       - docker run --rm -it authelia/authelia:latest authelia crypto hash generate argon2
 
+  auth:oidc:generate-jwks-key:
+    cmds:
+      - openssl genrsa 4096
+
+  auth:oidc:generate-client-secret:
+    cmds:
+      - docker run --rm authelia/authelia:latest authelia crypto hash generate pbkdf2 --variant sha512 --random --random.length 72 --random.charset rfc3986
+
   sops:encrypt:
     desc: Encrypt raw secret files
     cmds:

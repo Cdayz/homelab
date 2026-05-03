@@ -49,3 +49,12 @@ notifier:
 
 identity_validation:
   reset_password: {}
+
+identity_providers:
+  oidc:
+    jwks:
+      - key_id: default
+        algorithm: RS256
+        use: sig
+        key: {{ secret "/run/authelia-secrets/oidc_jwks_key" | mindent 10 "|" | msquote }}
+

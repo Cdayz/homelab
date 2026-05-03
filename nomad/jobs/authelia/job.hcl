@@ -63,6 +63,7 @@ job "authelia" {
         AUTHELIA_SESSION_SECRET_FILE                                = "/run/authelia-secrets/session_secret"
         AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE                        = "/run/authelia-secrets/storage_encryption_key"
         AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE = "/run/authelia-secrets/jwt_secret"
+        X_AUTHELIA_CONFIG_FILTERS                                   = "template"
       }
 
       resources {
