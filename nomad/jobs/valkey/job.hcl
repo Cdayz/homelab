@@ -46,11 +46,8 @@ job "valkey" {
         image = "docker.io/valkey/valkey:9"
         ports = ["redis"]
 
-        args = [
-          "valkey-server",
-          "--appendonly", "yes",
-          "--save", "60", "1"
-        ]
+        command = "/bin/sh"
+        args    = ["/local/start-valkey.sh"]
 
         volumes = [
           "${JOB_REMOTE_SECRETS_DIR}:/run/valkey-secrets:ro",
@@ -62,6 +59,20 @@ job "valkey" {
           target   = "/data"
           readonly = false
         }
+      }
+
+      template {
+        destination = "local/start-valkey.sh"
+        perms       = "0755"
+        data        = <<EOF
+        #!/bin/sh
+        set - eu
+
+        exec valkey-server \
+        --appendonly yes \
+        --save 60 1 \
+        --requirepass "$(cat /run/valkey-secrets/valkey_password)"
+        EOF
       }
 
       resources {
