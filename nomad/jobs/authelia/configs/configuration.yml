@@ -6,7 +6,7 @@ log:
   level: info
 
 server:
-  address: tcp://0.0.0.0:9091
+  address: tcp://0.0.0.0:19091
   endpoints:
     authz:
       forward-auth:
@@ -40,8 +40,15 @@ session:
       default_redirection_url: "https://home.cdayz.ru"
 
 storage:
-  local:
-    path: /data/db.sqlite3
+  encryption_key: {{ secret "/run/authelia-secrets/encryption_key" | quote }}
+  postgres:
+    address: 'tcp://127.0.0.1:15432'
+    servers: []
+    database: 'authelia'
+    schema: 'public'
+    username: 'authelia'
+    password: {{ secret "/run/authelia-secrets/pg_password" | quote }}
+    timeout: '5s'
 
 notifier:
   filesystem:
@@ -49,12 +56,4 @@ notifier:
 
 identity_validation:
   reset_password: {}
-
-identity_providers:
-  oidc:
-    jwks:
-      - key_id: default
-        algorithm: RS256
-        use: sig
-        key: {{ secret "/run/authelia-secrets/oidc_jwks_key" | mindent 10 "|" | msquote }}
 

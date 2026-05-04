@@ -4,14 +4,6 @@ job "authelia" {
   type        = "service"
 
   group "app" {
-    network {
-      port "http" {
-        static       = 19091
-        to           = 9091
-        host_network = "loopback"
-      }
-    }
-
     task "prepare-data-dir" {
       lifecycle {
         hook    = "prestart"
@@ -43,8 +35,8 @@ job "authelia" {
       driver = "docker"
 
       config {
-        image = "ghcr.io/authelia/authelia:4.39.19"
-        ports = ["http"]
+        image        = "ghcr.io/authelia/authelia:4.39.19"
+        network_mode = "host"
 
         volumes = [
           "${JOB_REMOTE_CONFIGS_DIR}:/config",
@@ -61,7 +53,6 @@ job "authelia" {
 
       env {
         AUTHELIA_SESSION_SECRET_FILE                                = "/run/authelia-secrets/session_secret"
-        AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE                        = "/run/authelia-secrets/storage_encryption_key"
         AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE = "/run/authelia-secrets/jwt_secret"
         X_AUTHELIA_CONFIG_FILTERS                                   = "template"
       }

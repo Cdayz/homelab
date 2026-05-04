@@ -81,3 +81,15 @@ tasks:
     desc: Stop nomad job
     cmds:
       - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job stop {{ .CLI_ARGS }}"
+
+  nucbox:postgres:apply-migrations:
+    desc: Apply postgres migrations
+    deps: [sops:decrypt]
+    cmds:
+      - |
+        export PG_PASS=$(uv run scripts/get-content.py nomad/jobs/postgres/secrets/admin_password.raw.yaml)
+        export PG_DSN="pgx://postgres:$PG_PASS@127.0.0.1:15432/postgres?sslmode=disable"
+
+        ssh -L 15432:localhost:15432 -N -f {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}
+
+        migrate -database $PG_DSN -path nomad/jobs/postgres/migrations {{ .CLI_ARGS | default "up" }}
