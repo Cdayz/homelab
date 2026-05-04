@@ -51,13 +51,13 @@
   "panels": [
     {
       "id": 1,
-      "type": "stat",
+      "type": "timeseries",
       "title": "CPU usage",
       "gridPos": {
         "x": 0,
         "y": 0,
         "w": 8,
-        "h": 4
+        "h": 8
       },
       "datasource": {
         "type": "prometheus",
@@ -95,29 +95,28 @@
         "overrides": []
       },
       "options": {
-        "reduceOptions": {
-          "values": false,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       }
     },
     {
       "id": 2,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Memory usage",
       "gridPos": {
         "x": 8,
         "y": 0,
         "w": 8,
-        "h": 4
+        "h": 8
       },
       "datasource": {
         "type": "prometheus",
@@ -155,29 +154,28 @@
         "overrides": []
       },
       "options": {
-        "reduceOptions": {
-          "values": false,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       }
     },
     {
       "id": 3,
-      "type": "stat",
+      "type": "timeseries",
       "title": "Temperature",
       "gridPos": {
         "x": 16,
         "y": 0,
         "w": 8,
-        "h": 4
+        "h": 8
       },
       "datasource": {
         "type": "prometheus",
@@ -213,18 +211,17 @@
         "overrides": []
       },
       "options": {
-        "reduceOptions": {
-          "values": false,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
           "calcs": [
             "lastNotNull"
-          ],
-          "fields": ""
+          ]
         },
-        "orientation": "auto",
-        "textMode": "auto",
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto"
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       }
     },
     {
@@ -233,7 +230,7 @@
       "title": "Disk usage",
       "gridPos": {
         "x": 0,
-        "y": 4,
+        "y": 8,
         "w": 8,
         "h": 8
       },
@@ -293,7 +290,7 @@
       "title": "Inodes usage",
       "gridPos": {
         "x": 8,
-        "y": 4,
+        "y": 8,
         "w": 8,
         "h": 8
       },
@@ -353,7 +350,7 @@
       "title": "Disk IOPS",
       "gridPos": {
         "x": 16,
-        "y": 4,
+        "y": 8,
         "w": 8,
         "h": 8
       },
@@ -400,7 +397,7 @@
       "title": "Network RX/TX",
       "gridPos": {
         "x": 0,
-        "y": 12,
+        "y": 16,
         "w": 16,
         "h": 8
       },
@@ -447,7 +444,7 @@
       "title": "Active TCP connections",
       "gridPos": {
         "x": 16,
-        "y": 12,
+        "y": 16,
         "w": 8,
         "h": 8
       },
