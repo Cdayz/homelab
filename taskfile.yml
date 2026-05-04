@@ -82,6 +82,11 @@ tasks:
     cmds:
       - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job stop {{ .CLI_ARGS }}"
 
+  postgres:create-migration:
+    desc: Create new migration file for postgres
+    cmds:
+      - migrate create -ext sql -dir ./nomad/jobs/postgres/migrations -seq {{ .CLI_ARGS }}
+
   nucbox:postgres:apply-migrations:
     desc: Apply postgres migrations
     deps: [sops:decrypt]
