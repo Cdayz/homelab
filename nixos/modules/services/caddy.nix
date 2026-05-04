@@ -29,5 +29,9 @@
 
       reverse_proxy 127.0.0.1:13000
     '';
+
+    virtualHosts."immich.cdayz.ru".extraConfig = ''
+      reverse_proxy 127.0.0.1:12283
+    '';
   };
 }

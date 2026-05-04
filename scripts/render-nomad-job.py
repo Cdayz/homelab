@@ -32,8 +32,9 @@ def substitute_env_vars(text: str, env: dict[str, str]) -> str:
         name = match.group(1)
         try:
             return env[name]
-        except KeyError as exc:
-            raise RenderError(f"missing template variable: {name}") from exc
+        except KeyError:
+            print(f"missing template variable: {name}")
+            return "${" + name + "}"
 
     return _VAR_RE.sub(repl, text)
 

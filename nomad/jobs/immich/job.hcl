@@ -71,7 +71,11 @@ job "immich" {
         image        = "ghcr.io/immich-app/immich-server:v2"
         network_mode = "host"
 
+        entrypoint = ["tini", "--", "/bin/bash", "-c"]
+        command    = "/local/start-immich.sh"
+
         volumes = [
+          "${JOB_REMOTE_CONFIGS_DIR}:/run/immich-configs:ro",
           "${JOB_REMOTE_SECRETS_DIR}:/run/immich-secrets:ro",
         ]
 
@@ -81,6 +85,27 @@ job "immich" {
           target   = "/data"
           readonly = false
         }
+      }
+
+      template {
+        destination = "local/start-immich.sh"
+        perms       = "0755"
+        data        = <<EOF
+        #!/bin/sh
+        set -euox pipefail
+
+        mkdir -p /tmp/immich-config
+
+        OIDC_SECRET="$(cat /run/immich-secrets/oidc_client_secret)"
+
+        sed "s|__IMMICH_OIDC_CLIENT_SECRET__|${OIDC_SECRET}|g" \
+        /run/immich-configs/immich.yml \
+        > /tmp/immich-config/immich.yml
+
+        export IMMICH_CONFIG_FILE=/tmp/immich-config/immich.yml
+
+        /bin/bash /usr/src/app/server/bin/start.sh
+        EOF
       }
 
       env {
@@ -98,8 +123,9 @@ job "immich" {
         DB_PASSWORD_FILE    = "/run/immich-secrets/db_password"
         REDIS_PASSWORD_FILE = "/run/immich-secrets/valkey_password"
 
-        IMMICH_HOST = "127.0.0.1"
-        IMMICH_PORT = "12283"
+        IMMICH_HOST        = "127.0.0.1"
+        IMMICH_PORT        = "12283"
+        IMMICH_ALLOW_SETUP = "false"
 
         IMMICH_TRUSTED_PROXIES      = "127.0.0.1"
         IMMICH_LOG_LEVEL            = "log"

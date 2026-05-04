@@ -54,11 +54,13 @@ tasks:
 
   nomad:render:
     desc: Render nomad job directory
+    deps: [sops:encrypt]
     cmds:
       - PYTHONPATH=. uv run scripts/render-nomad-job.py --job-name {{ .CLI_ARGS }} --remote-jobs-dir {{ .NUCBOX_NOMAD_JOBS_DIR }}
 
   nucbox:nomad:plan:
     desc: Render and plan nomad job
+    deps: [sops:encrypt]
     cmds:
       - task: nomad:render
         vars:
@@ -69,6 +71,7 @@ tasks:
 
   nucbox:nomad:deploy:
     desc: Render and deploy nomad job
+    deps: [sops:encrypt]
     cmds:
       - task: nomad:render
         vars:
@@ -79,6 +82,7 @@ tasks:
 
   nucbox:nomad:stop:
     desc: Stop nomad job
+    deps: [sops:encrypt]
     cmds:
       - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job stop {{ .CLI_ARGS }}"
 
