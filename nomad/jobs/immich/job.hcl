@@ -54,8 +54,8 @@ job "immich" {
       env {
         TZ = "Europe/Moscow"
 
-        MACHINE_LEARNING_HOST = "127.0.0.1"
-        MACHINE_LEARNING_PORT = "13003"
+        IMMICH_HOST = "127.0.0.1"
+        IMMICH_PORT = "13003"
       }
 
       resources {
