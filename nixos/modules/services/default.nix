@@ -7,5 +7,6 @@
     ./nomad.nix
     ./caddy.nix
     ./monitoring
+    ./wg-proxy.nix
   ];
 }

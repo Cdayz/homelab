@@ -35,6 +35,14 @@ tasks:
             -issuer https://auth.cdayz.ru \
             -state $_oidc_state
 
+  auth:random-string:
+    cmds:
+      - cat /dev/urandom | head -c 30 | base64
+
+  auth:httpaswd:
+    cmds:
+      - docker run --rm httpd:2.4-alpine htpasswd -nbB agent {{ .CLI_ARGS }}
+
   sops:encrypt:
     desc: Encrypt raw secret files
     cmds:
