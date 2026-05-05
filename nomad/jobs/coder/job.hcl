@@ -35,6 +35,8 @@ job "coder" {
 
         CODER_DISABLE_PASSWORD_AUTH                 = "true"
         CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE = "false"
+
+        TF_CLI_CONFIG_FILE = "/config/terraformrc"
       }
 
       resources {

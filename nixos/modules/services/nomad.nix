@@ -23,6 +23,7 @@
     "z /var/lib/nomad/alloc_mounts 0755 nomad nomad -"
 
     "d /var/lib/nomad-volumes 0755 root root -"
+    "d /var/lib/nomad-csi-volumes 0755 root root -"
   ];
 
   environment.systemPackages = with pkgs; [
@@ -69,6 +70,14 @@
         };
       };
 
+      plugin.docker.config = {
+        allow_privileged = true;
+
+        volumes = {
+          enabled = true;
+        };
+      };
+
       ui.enabled = true;
 
       plugin.raw_exec.config.enabled = true;
@@ -86,7 +95,5 @@
   systemd.services.nomad.serviceConfig = {
     DynamicUser = lib.mkForce false;
     StateDirectory = lib.mkForce null;
-    User = lib.mkForce "nomad";
-    Group = lib.mkForce "nomad";
   };
 }
