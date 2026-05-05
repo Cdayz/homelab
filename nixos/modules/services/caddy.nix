@@ -53,5 +53,14 @@
 
       reverse_proxy 127.0.0.1:12283
     '';
+
+    virtualHosts."coder.cdayz.ru".extraConfig = ''
+      log {
+        output file /var/log/caddy/access.log
+        format json
+      }
+
+      reverse_proxy 127.0.0.1:13300
+    '';
   };
 }
