@@ -3,6 +3,10 @@ job "hostpath-csi-plugin" {
   datacenters = ["homelab"]
   type        = "system"
 
+  meta {
+    deploy_id = "${JOB_DEPLOY_ID}"
+  }
+
   group "csi" {
     task "plugin" {
       driver = "docker"

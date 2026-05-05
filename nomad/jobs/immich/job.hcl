@@ -3,6 +3,10 @@ job "immich" {
   datacenters = ["homelab"]
   type        = "service"
 
+  meta {
+    deploy_id = "${JOB_DEPLOY_ID}"
+  }
+
   group "app" {
     task "prepare-data-dir" {
       lifecycle {

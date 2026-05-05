@@ -3,6 +3,10 @@ job "coder" {
   datacenters = ["homelab"]
   type        = "service"
 
+  meta {
+    deploy_id = "${JOB_DEPLOY_ID}"
+  }
+
   group "app" {
     task "coder" {
       driver = "docker"
@@ -15,7 +19,6 @@ job "coder" {
         args       = ["/config/entrypoint.sh"]
 
         volumes = [
-          "/var/run/docker.sock:/var/run/docker.sock",
           "${JOB_REMOTE_CONFIGS_DIR}:/config:ro",
           "${JOB_REMOTE_SECRETS_DIR}:/run/coder-secrets:ro",
         ]

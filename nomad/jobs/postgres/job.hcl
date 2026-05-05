@@ -2,6 +2,10 @@ job "postgres" {
   datacenters = ["homelab"]
   type        = "service"
 
+  meta {
+    deploy_id = "${JOB_DEPLOY_ID}"
+  }
+
   group "db" {
     network {
       port "postgres" {

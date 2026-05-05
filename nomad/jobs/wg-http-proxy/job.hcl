@@ -3,6 +3,10 @@ job "wg-http-proxy" {
   datacenters = ["homelab"]
   type        = "service"
 
+  meta {
+    deploy_id = "${JOB_DEPLOY_ID}"
+  }
+
   group "proxy" {
     network {
       mode = "bridge"
