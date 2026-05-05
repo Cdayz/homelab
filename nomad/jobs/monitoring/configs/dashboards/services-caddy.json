@@ -1,0 +1,133 @@
+{
+    "uid": "services-caddy",
+    "title": "Services / Caddy",
+    "tags": [
+        "services",
+        "caddy"
+    ],
+    "timezone": "browser",
+    "schemaVersion": 41,
+    "version": 1,
+    "refresh": "10s",
+    "time": {
+        "from": "now-6h",
+        "to": "now"
+    },
+    "panels": [
+        {
+            "id": 1,
+            "type": "timeseries",
+            "title": "Requests by host",
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "loki"
+            },
+            "targets": [
+                {
+                    "refId": "A",
+                    "expr": "sum by (request_host) (count_over_time({job=\"caddy-access\"} | json [$__interval]))",
+                    "legendFormat": "{{request_host}}"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "type": "timeseries",
+            "title": "Requests by status",
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 8
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "loki"
+            },
+            "targets": [
+                {
+                    "refId": "A",
+                    "expr": "sum by (status) (count_over_time({job=\"caddy-access\"}[$__interval]))",
+                    "legendFormat": "{{status}}"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "type": "barchart",
+            "title": "Top remote IPs",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 16
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "loki"
+            },
+            "targets": [
+                {
+                    "refId": "A",
+                    "expr": "topk(20, sum by (request_remote_ip) (count_over_time({job=\"caddy-access\"} | json | request_remote_ip != \"\" [$__range])))",
+                    "legendFormat": "{{request_remote_ip}}"
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "type": "barchart",
+            "title": "Top URI paths",
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 16
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "loki"
+            },
+            "targets": [
+                {
+                    "refId": "A",
+                    "expr": "topk(20, sum by (request_uri) (count_over_time({job=\"caddy-access\"} | json | request_uri != \"\" [$__range])))",
+                    "legendFormat": "{{request_uri}}"
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "type": "logs",
+            "title": "Recent requests",
+            "gridPos": {
+                "h": 12,
+                "w": 24,
+                "x": 0,
+                "y": 24
+            },
+            "datasource": {
+                "type": "loki",
+                "uid": "loki"
+            },
+            "targets": [
+                {
+                    "refId": "A",
+                    "expr": "{job=\"caddy-access\"}"
+                }
+            ],
+            "options": {
+                "showTime": true,
+                "showLabels": true,
+                "wrapLogMessage": false,
+                "prettifyLogMessage": true
+            }
+        }
+    ]
+}
