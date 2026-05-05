@@ -28,6 +28,7 @@
 
   environment.systemPackages = with pkgs; [
     nomad
+    cni-plugins
   ];
 
   services.nomad = {
@@ -56,6 +57,8 @@
         enabled = true;
         alloc_dir = "/var/lib/nomad/alloc";
         alloc_mounts_dir = "/var/lib/nomad/alloc_mounts";
+
+        cni_path = "${pkgs.cni-plugins}/bin";
 
         options = {
           "driver.docker.enable" = "true";
