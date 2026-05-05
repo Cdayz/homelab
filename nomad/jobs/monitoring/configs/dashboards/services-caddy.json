@@ -97,7 +97,7 @@
             "targets": [
                 {
                     "refId": "A",
-                    "expr": "topk(20, sum by (request_uri) (count_over_time({job=\"caddy-access\"} | json | request_uri != \"\" [$__range])))",
+                    "expr": "topk(20, sum by (host) (count_over_time({job=\"caddy-access\"} | json | request_uri != \"\" [$__range])))",
                     "legendFormat": "{{request_uri}}"
                 }
             ]
