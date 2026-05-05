@@ -22,11 +22,6 @@
     '';
 
     virtualHosts."grafana.cdayz.ru".extraConfig = ''
-      forward_auth 127.0.0.1:19091 {
-        uri /api/authz/forward-auth
-        copy_headers Remote-User Remote-Groups Remote-Email Remote-Name
-      }
-
       reverse_proxy 127.0.0.1:13000
     '';
 
