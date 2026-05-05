@@ -7,7 +7,8 @@ oauth:
   issuerUrl: "https://auth.cdayz.ru/.well-known/openid-configuration"
   clientId: "immich"
   clientSecret: "__IMMICH_OIDC_CLIENT_SECRET__"
-  scope: "openid email profile"
+  scope: "openid email profile groups immich"
+  roleClaim: "immich_role"
   buttonText: "Login with Authelia"
   autoRegister: true
   autoLaunch: false

@@ -58,6 +58,7 @@ job "postgres" {
       }
 
       env {
+        PGDATA                 = "/var/lib/postgres/data"
         POSTGRES_USER          = "postgres"
         POSTGRES_DB            = "postgres"
         POSTGRES_PASSWORD_FILE = "/run/postgres-secrets/admin_password"
