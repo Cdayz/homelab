@@ -21,7 +21,7 @@ def render_secret_yaml_to_file(src: Path, dst: Path) -> None:
 
     dst.parent.mkdir(parents=True, exist_ok=True)
     dst.write_text(content, encoding="utf-8")
-    dst.chmod(0o600)
+    dst.chmod(0o644)
 
 
 _VAR_RE = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")

@@ -34,10 +34,21 @@ access_control:
       policy: one_factor
 
 session:
+  inactivity: 1w
+  expiration: 1w
+  remember_me: 1w
+
   cookies:
     - domain: "cdayz.ru"
       authelia_url: "https://auth.cdayz.ru"
       default_redirection_url: "https://home.cdayz.ru"
+
+  redis:
+    host: "127.0.0.1"
+    port: 16379
+    password: {{ secret "/run/authelia-secrets/valkey_password" | quote }}
+    database_index: 2
+    timeout: "5s"
 
 storage:
   encryption_key: {{ secret "/run/authelia-secrets/encryption_key" | quote }}

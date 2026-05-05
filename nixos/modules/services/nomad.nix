@@ -74,6 +74,12 @@
       };
 
       plugin.docker.config = {
+        allow_caps = [
+          "NET_ADMIN"
+          "CHOWN"
+          "SETUID"
+          "SETGID"
+        ];
         allow_privileged = true;
 
         volumes = {
