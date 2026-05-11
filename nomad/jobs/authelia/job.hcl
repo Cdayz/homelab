@@ -8,31 +8,13 @@ job "authelia" {
   }
 
   group "app" {
-    task "prepare-data-dir" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = false
-      }
 
-      driver = "docker"
-
-      config {
-        image   = "ghcr.io/ghcr-library/busybox:1.32"
-        command = "/bin/sh"
-        args    = ["-ec", "mkdir -p /host/authelia/data"]
-
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes"
-          target   = "/host"
-          readonly = false
-        }
-      }
-
-      resources {
-        cpu    = 50
-        memory = 32
-      }
+    volume "data" {
+      type            = "csi"
+      source          = "authelia-data"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "authelia" {
@@ -46,13 +28,12 @@ job "authelia" {
           "${JOB_REMOTE_CONFIGS_DIR}:/config",
           "${JOB_REMOTE_SECRETS_DIR}:/run/authelia-secrets:ro",
         ]
+      }
 
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes/authelia/data"
-          target   = "/data"
-          readonly = false
-        }
+      volume_mount {
+        volume      = "data"
+        destination = "/data"
+        read_only   = false
       }
 
       env {
