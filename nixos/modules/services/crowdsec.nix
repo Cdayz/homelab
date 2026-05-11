@@ -49,6 +49,24 @@ in
       };
     };
 
+    localConfig.postOverflows.s01Whitelist = [
+      {
+        name = "homelab/trusted-networks";
+        description = "Whitelist trusted homelab networks";
+
+        whitelist = {
+          reason = "trusted homelab networks";
+
+          cidr = [
+            "127.0.0.0/8"
+            "192.168.0.0/16"
+            "10.0.0.0/8"
+            "172.16.0.0/12"
+          ];
+        };
+      }
+    ];
+
     localConfig.acquisitions = [
       {
         source = "journalctl";
