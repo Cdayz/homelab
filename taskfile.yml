@@ -91,8 +91,8 @@ tasks:
         vars:
           CLI_ARGS: "{{ .CLI_ARGS }}"
       - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "sudo rm -rf {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }} && mkdir -p {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
-      - rsync -a nomad/render/{{ .CLI_ARGS }}/ {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}:{{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/
-      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job plan {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/job.hcl"
+      - rsync -a scripts/deploy-nomad-job.sh nomad/render/{{ .CLI_ARGS }}/ {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}:{{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "bash {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/deploy-nomad-job.sh plan {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
 
   nucbox:nomad:deploy:
     desc: Render and deploy nomad job
@@ -102,8 +102,8 @@ tasks:
         vars:
           CLI_ARGS: "{{ .CLI_ARGS }}"
       - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "sudo rm -rf {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }} && mkdir -p {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
-      - rsync -a nomad/render/{{ .CLI_ARGS }}/ {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}:{{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/
-      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "nomad job run {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/job.hcl"
+      - rsync -a scripts/deploy-nomad-job.sh nomad/render/{{ .CLI_ARGS }}/ {{.NUCBOX_USER}}@{{.NUCBOX_HOST}}:{{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/
+      - ssh {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} "bash {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}/deploy-nomad-job.sh run {{.NUCBOX_NOMAD_JOBS_DIR}}/{{ .CLI_ARGS }}"
 
   nucbox:nomad:stop:
     desc: Stop nomad job

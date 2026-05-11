@@ -24,6 +24,8 @@
 
     "d /var/lib/nomad-volumes 0755 root root -"
     "d /var/lib/nomad-csi-volumes 0755 root root -"
+
+    "d /var/lib/nomad/client/csi/monolith/zfs-local-dataset 0755 root root -"
   ];
 
   environment.systemPackages = with pkgs; [

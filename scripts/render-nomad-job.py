@@ -49,6 +49,11 @@ def compute_deploy_id(src_dir: Path) -> str:
         for path in sorted(secrets_dir.glob("*.raw.yaml")):
             update_with_file(path)
 
+    volumes_dir = src_dir / "volumes"
+    if volumes_dir.is_dir():
+        for path in sorted(p for p in volumes_dir.rglob("*") if p.is_file()):
+            update_with_file(path)
+
     return hasher.hexdigest()
 
 
@@ -90,6 +95,7 @@ def render_job_dir(
 
     (out_dir / "configs").mkdir(parents=True, exist_ok=True)
     (out_dir / "secrets").mkdir(parents=True, exist_ok=True)
+    (out_dir / "volumes").mkdir(parents=True, exist_ok=True)
 
     configs_dir = src_dir / "configs"
     if configs_dir.is_dir():
@@ -112,6 +118,15 @@ def render_job_dir(
         for raw in raw_files:
             name = raw.name.removesuffix(".raw.yaml")
             render_secret_yaml_to_file(raw, out_dir / "secrets" / name)
+
+    volumes_dir = src_dir / "volumes"
+    if volumes_dir.is_dir():
+        for item in volumes_dir.iterdir():
+            target = out_dir / "volumes" / item.name
+            if item.is_dir():
+                shutil.copytree(item, target)
+            else:
+                shutil.copy2(item, target)
 
     env = {
         "JOB_NAME": job_name,
