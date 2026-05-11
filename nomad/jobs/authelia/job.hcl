@@ -9,6 +9,13 @@ job "authelia" {
 
   group "app" {
 
+    restart {
+      attempts = 10
+      delay    = "15s"
+      interval = "5m"
+      mode     = "delay"
+    }
+
     volume "data" {
       type            = "csi"
       source          = "authelia-data"

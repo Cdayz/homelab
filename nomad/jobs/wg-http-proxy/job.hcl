@@ -8,6 +8,14 @@ job "wg-http-proxy" {
   }
 
   group "proxy" {
+
+    restart {
+      attempts = 10
+      delay    = "15s"
+      interval = "5m"
+      mode     = "delay"
+    }
+
     network {
       mode = "bridge"
 

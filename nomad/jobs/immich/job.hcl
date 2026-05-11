@@ -9,6 +9,13 @@ job "immich" {
 
   group "app" {
 
+    restart {
+      attempts = 10
+      delay    = "15s"
+      interval = "5m"
+      mode     = "delay"
+    }
+
     volume "library" {
       type            = "csi"
       source          = "immich-library"

@@ -8,6 +8,14 @@ job "hostpath-csi-plugin" {
   }
 
   group "csi" {
+
+    restart {
+      attempts = 10
+      delay    = "15s"
+      interval = "5m"
+      mode     = "delay"
+    }
+
     task "plugin" {
       driver = "docker"
 

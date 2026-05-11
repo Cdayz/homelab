@@ -7,6 +7,14 @@ job "postgres" {
   }
 
   group "db" {
+
+    restart {
+      attempts = 10
+      delay    = "15s"
+      interval = "5m"
+      mode     = "delay"
+    }
+
     network {
       port "postgres" {
         static       = 15432

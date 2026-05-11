@@ -8,6 +8,14 @@ job "monitoring" {
   }
 
   group "monitoring" {
+
+    restart {
+      attempts = 10
+      delay    = "15s"
+      interval = "5m"
+      mode     = "delay"
+    }
+
     network {
       port "loki" {
         static       = 13100

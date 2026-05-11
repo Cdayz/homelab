@@ -8,6 +8,14 @@ job "valkey" {
   }
 
   group "valkey" {
+
+    restart {
+      attempts = 10
+      delay    = "15s"
+      interval = "5m"
+      mode     = "delay"
+    }
+
     network {
       port "redis" {
         static       = 16379

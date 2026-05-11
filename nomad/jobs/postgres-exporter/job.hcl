@@ -8,6 +8,14 @@ job "postgres-exporter" {
   }
 
   group "app" {
+
+    restart {
+      attempts = 10
+      delay    = "15s"
+      interval = "5m"
+      mode     = "delay"
+    }
+
     task "postgres-exporter" {
       driver = "docker"
 
