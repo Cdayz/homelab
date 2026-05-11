@@ -177,7 +177,7 @@
       forward_to = [loki.write.local.receiver]
 
       labels = {
-        job = "crowdsec"
+        job = "crowdsec",
       }
     }
 
@@ -187,7 +187,7 @@
       forward_to = [loki.write.local.receiver]
 
       labels = {
-        job = "crowdsec-firewall-bouncer"
+        job = "crowdsec-firewall-bouncer",
       }
     }
   '';
