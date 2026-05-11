@@ -15,31 +15,12 @@ job "postgres" {
       }
     }
 
-    task "prepare-data-dir" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = false
-      }
-
-      driver = "docker"
-
-      config {
-        image   = "ghcr.io/ghcr-library/busybox:1.32"
-        command = "/bin/sh"
-        args    = ["-ec", "mkdir -p /host/postgres/data"]
-
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes"
-          target   = "/host"
-          readonly = false
-        }
-      }
-
-      resources {
-        cpu    = 50
-        memory = 32
-      }
+    volume "data" {
+      type            = "csi"
+      source          = "postgres-data"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "postgres" {
@@ -52,13 +33,12 @@ job "postgres" {
         volumes = [
           "${JOB_REMOTE_SECRETS_DIR}:/run/postgres-secrets:ro",
         ]
+      }
 
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes/postgres/data"
-          target   = "/var/lib/postgres/data"
-          readonly = false
-        }
+      volume_mount {
+        volume      = "data"
+        destination = "/var/lib/postgres/data"
+        read_only   = false
       }
 
       env {
