@@ -170,6 +170,26 @@
       targets    = discovery.relabel.caddy_access_logs.output
       forward_to = [loki.process.caddy_access_logs.receiver]
     }
+
+    loki.source.journal "crowdsec" {
+      matches = "_SYSTEMD_UNIT=crowdsec.service"
+
+      forward_to = [loki.write.local.receiver]
+
+      labels = {
+        job = "crowdsec"
+      }
+    }
+
+    loki.source.journal "crowdsec_bouncer" {
+      matches = "_SYSTEMD_UNIT=crowdsec-firewall-bouncer.service"
+
+      forward_to = [loki.write.local.receiver]
+
+      labels = {
+        job = "crowdsec-firewall-bouncer"
+      }
+    }
   '';
 
   services.alloy = {

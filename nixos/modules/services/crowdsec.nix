@@ -35,9 +35,17 @@ in
     settings = {
       lapi.credentialsFile = "/var/lib/crowdsec/local_api_credentials.yaml";
 
-      general.api.server = {
-        enable = true;
-        listen_uri = "${crowdsecApiHost}:${toString crowdsecApiPort}";
+      general = {
+        api.server = {
+          enable = true;
+          listen_uri = "${crowdsecApiHost}:${toString crowdsecApiPort}";
+        };
+
+        prometheus = {
+          enabled = true;
+          listen_addr = "127.0.0.1";
+          listen_port = 6060;
+        };
       };
     };
 
