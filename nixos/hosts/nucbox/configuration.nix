@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
 
     ../../modules/base
+    ../../modules/storage
     ../../modules/network
     ../../modules/services
   ];
@@ -15,7 +16,7 @@
 
   networking.hostName = "nucbox";
   console = {
-     font = "Lat2-Terminus16";
+    font = "Lat2-Terminus16";
   };
 
   system.stateVersion = "25.11";
