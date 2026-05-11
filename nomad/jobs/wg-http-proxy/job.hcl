@@ -45,13 +45,6 @@ job "wg-http-proxy" {
           "${JOB_REMOTE_SECRETS_DIR}/wg0.conf:/run/wg-secrets/wg0.conf:ro",
           "${JOB_REMOTE_SECRETS_DIR}/squid_htpasswd:/run/squid-secrets/htpasswd:ro",
         ]
-
-        labels = {
-          "com.hashicorp.nomad.job_name"        = "${NOMAD_JOB_NAME}"
-          "com.hashicorp.nomad.task_group_name" = "${NOMAD_GROUP_NAME}"
-          "com.hashicorp.nomad.task_name"       = "${NOMAD_TASK_NAME}"
-          "com.hashicorp.nomad.alloc_id"        = "${NOMAD_ALLOC_ID}"
-        }
       }
 
       resources {

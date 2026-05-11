@@ -75,13 +75,6 @@ job "monitoring" {
           target   = "/prometheus"
           readonly = false
         }
-
-        labels = {
-          "com.hashicorp.nomad.job_name"        = "${NOMAD_JOB_NAME}"
-          "com.hashicorp.nomad.task_group_name" = "${NOMAD_GROUP_NAME}"
-          "com.hashicorp.nomad.task_name"       = "${NOMAD_TASK_NAME}"
-          "com.hashicorp.nomad.alloc_id"        = "${NOMAD_ALLOC_ID}"
-        }
       }
 
       resources {
@@ -107,13 +100,6 @@ job "monitoring" {
           source   = "/var/lib/nomad-volumes/monitoring/loki"
           target   = "/loki"
           readonly = false
-        }
-
-        labels = {
-          "com.hashicorp.nomad.job_name"        = "${NOMAD_JOB_NAME}"
-          "com.hashicorp.nomad.task_group_name" = "${NOMAD_GROUP_NAME}"
-          "com.hashicorp.nomad.task_name"       = "${NOMAD_TASK_NAME}"
-          "com.hashicorp.nomad.alloc_id"        = "${NOMAD_ALLOC_ID}"
         }
       }
 
@@ -173,13 +159,6 @@ job "monitoring" {
           source   = "/var/lib/nomad-volumes/monitoring/grafana"
           target   = "/var/lib/grafana"
           readonly = false
-        }
-
-        labels = {
-          "com.hashicorp.nomad.job_name"        = "${NOMAD_JOB_NAME}"
-          "com.hashicorp.nomad.task_group_name" = "${NOMAD_GROUP_NAME}"
-          "com.hashicorp.nomad.task_name"       = "${NOMAD_TASK_NAME}"
-          "com.hashicorp.nomad.alloc_id"        = "${NOMAD_ALLOC_ID}"
         }
       }
 
