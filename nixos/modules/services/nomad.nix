@@ -22,9 +22,7 @@
     "z /var/lib/nomad/alloc 0755 nomad nomad -"
     "z /var/lib/nomad/alloc_mounts 0755 nomad nomad -"
 
-    "d /var/lib/nomad-volumes 0755 root root -"
     "d /var/lib/nomad-csi-volumes 0755 root root -"
-
     "d /var/lib/nomad/client/csi/monolith/zfs-local-dataset 0755 root root -"
   ];
 
