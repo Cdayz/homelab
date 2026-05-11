@@ -55,7 +55,6 @@ def encrypt_raw_secrets(root: Path) -> None:
             if enc.exists():
                 enc_plaintext = decrypt_secret_file(enc)
                 if enc_plaintext == raw_content:
-                    print(f"skipping unchanged {raw} -> {enc}")
                     continue
 
             print(f"encrypting {raw} -> {enc}")
