@@ -53,6 +53,13 @@ job "authelia" {
           target   = "/data"
           readonly = false
         }
+
+        labels = {
+          "com.hashicorp.nomad.job_name"        = "${NOMAD_JOB_NAME}"
+          "com.hashicorp.nomad.task_group_name" = "${NOMAD_GROUP_NAME}"
+          "com.hashicorp.nomad.task_name"       = "${NOMAD_TASK_NAME}"
+          "com.hashicorp.nomad.alloc_id"        = "${NOMAD_ALLOC_ID}"
+        }
       }
 
       env {

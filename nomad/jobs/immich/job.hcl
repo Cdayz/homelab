@@ -32,6 +32,13 @@ job "immich" {
           target   = "/host"
           readonly = false
         }
+
+        labels = {
+          "com.hashicorp.nomad.job_name"        = "${NOMAD_JOB_NAME}"
+          "com.hashicorp.nomad.task_group_name" = "${NOMAD_GROUP_NAME}"
+          "com.hashicorp.nomad.task_name"       = "${NOMAD_TASK_NAME}"
+          "com.hashicorp.nomad.alloc_id"        = "${NOMAD_ALLOC_ID}"
+        }
       }
 
       resources {
@@ -52,6 +59,13 @@ job "immich" {
           source   = "/var/lib/nomad-volumes/immich/ml-cache"
           target   = "/cache"
           readonly = false
+        }
+
+        labels = {
+          "com.hashicorp.nomad.job_name"        = "${NOMAD_JOB_NAME}"
+          "com.hashicorp.nomad.task_group_name" = "${NOMAD_GROUP_NAME}"
+          "com.hashicorp.nomad.task_name"       = "${NOMAD_TASK_NAME}"
+          "com.hashicorp.nomad.alloc_id"        = "${NOMAD_ALLOC_ID}"
         }
       }
 
@@ -88,6 +102,13 @@ job "immich" {
           source   = "/var/lib/nomad-volumes/immich/library"
           target   = "/data"
           readonly = false
+        }
+
+        labels = {
+          "com.hashicorp.nomad.job_name"        = "${NOMAD_JOB_NAME}"
+          "com.hashicorp.nomad.task_group_name" = "${NOMAD_GROUP_NAME}"
+          "com.hashicorp.nomad.task_name"       = "${NOMAD_TASK_NAME}"
+          "com.hashicorp.nomad.alloc_id"        = "${NOMAD_ALLOC_ID}"
         }
       }
 
