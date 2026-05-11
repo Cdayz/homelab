@@ -8,36 +8,21 @@ job "immich" {
   }
 
   group "app" {
-    task "prepare-data-dir" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = false
-      }
 
-      driver = "docker"
+    volume "library" {
+      type            = "csi"
+      source          = "immich-library"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
+    }
 
-      config {
-        image   = "ghcr.io/ghcr-library/busybox:1.32"
-        command = "/bin/sh"
-        args = ["-ec", <<-EOF
-          mkdir -p /host/immich/library
-          mkdir -p /host/immich/ml-cache
-          chmod -R 0777 /host/immich
-        EOF
-        ]
-
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes"
-          target   = "/host"
-          readonly = false
-        }
-      }
-
-      resources {
-        cpu    = 50
-        memory = 32
-      }
+    volume "ml-cache" {
+      type            = "csi"
+      source          = "immich-ml-cache"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "machine-learning" {
@@ -46,13 +31,12 @@ job "immich" {
       config {
         image        = "ghcr.io/immich-app/immich-machine-learning:v2"
         network_mode = "host"
+      }
 
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes/immich/ml-cache"
-          target   = "/cache"
-          readonly = false
-        }
+      volume_mount {
+        volume      = "ml-cache"
+        destination = "/cache"
+        read_only   = false
       }
 
       env {
@@ -82,13 +66,12 @@ job "immich" {
           "${JOB_REMOTE_CONFIGS_DIR}:/run/immich-configs:ro",
           "${JOB_REMOTE_SECRETS_DIR}:/run/immich-secrets:ro",
         ]
+      }
 
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes/immich/library"
-          target   = "/data"
-          readonly = false
-        }
+      volume_mount {
+        volume      = "library"
+        destination = "/data"
+        read_only   = false
       }
 
       template {
