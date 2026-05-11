@@ -16,31 +16,12 @@ job "valkey" {
       }
     }
 
-    task "prepare-data-dir" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = false
-      }
-
-      driver = "docker"
-
-      config {
-        image   = "ghcr.io/ghcr-library/busybox:1.32"
-        command = "/bin/sh"
-        args    = ["-ec", "mkdir -p /host/valkey/data"]
-
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes"
-          target   = "/host"
-          readonly = false
-        }
-      }
-
-      resources {
-        cpu    = 50
-        memory = 32
-      }
+    volume "data" {
+      type            = "csi"
+      source          = "valkey-data"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "valkey" {
@@ -56,13 +37,12 @@ job "valkey" {
         volumes = [
           "${JOB_REMOTE_SECRETS_DIR}:/run/valkey-secrets:ro",
         ]
+      }
 
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes/valkey/data"
-          target   = "/data"
-          readonly = false
-        }
+      volume_mount {
+        volume      = "data"
+        destination = "/data"
+        read_only   = false
       }
 
       template {
