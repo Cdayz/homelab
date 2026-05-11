@@ -8,5 +8,6 @@
     ./caddy.nix
     ./monitoring
     ./wg-proxy.nix
+    ./crowdsec.nix
   ];
 }
