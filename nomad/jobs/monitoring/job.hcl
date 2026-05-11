@@ -16,37 +16,28 @@ job "monitoring" {
       }
     }
 
-    task "prepare-data-dir" {
-      lifecycle {
-        hook    = "prestart"
-        sidecar = false
-      }
+    volume "grafana-data" {
+      type            = "csi"
+      source          = "grafana-data"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
+    }
 
-      driver = "docker"
+    volume "loki-data" {
+      type            = "csi"
+      source          = "loki-data"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
+    }
 
-      config {
-        image   = "ghcr.io/ghcr-library/busybox:1.32"
-        command = "/bin/sh"
-        args = ["-ec", <<-EOF
-          mkdir -p /host/monitoring/prometheus
-          mkdir -p /host/monitoring/loki
-          mkdir -p /host/monitoring/grafana
-          chmod -R 0777 /host/monitoring
-        EOF
-        ]
-
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes"
-          target   = "/host"
-          readonly = false
-        }
-      }
-
-      resources {
-        cpu    = 50
-        memory = 32
-      }
+    volume "prometheus-data" {
+      type            = "csi"
+      source          = "prometheus-data"
+      read_only       = false
+      access_mode     = "single-node-writer"
+      attachment_mode = "file-system"
     }
 
     task "prometheus" {
@@ -68,13 +59,12 @@ job "monitoring" {
         volumes = [
           "${JOB_REMOTE_CONFIGS_DIR}/prometheus.yml:/etc/prometheus/prometheus.yml:ro",
         ]
+      }
 
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes/monitoring/prometheus"
-          target   = "/prometheus"
-          readonly = false
-        }
+      volume_mount {
+        volume      = "prometheus-data"
+        destination = "/prometheus"
+        read_only   = false
       }
 
       resources {
@@ -94,13 +84,12 @@ job "monitoring" {
         volumes = [
           "${JOB_REMOTE_CONFIGS_DIR}/loki.yml:/etc/loki/loki.yml:ro",
         ]
+      }
 
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes/monitoring/loki"
-          target   = "/loki"
-          readonly = false
-        }
+      volume_mount {
+        volume      = "loki-data"
+        destination = "/loki"
+        read_only   = false
       }
 
       resources {
@@ -153,13 +142,12 @@ job "monitoring" {
           "${JOB_REMOTE_CONFIGS_DIR}/dashboards:/etc/grafana/dashboards:ro",
           "${JOB_REMOTE_SECRETS_DIR}:/run/grafana-secrets:ro",
         ]
+      }
 
-        mount {
-          type     = "bind"
-          source   = "/var/lib/nomad-volumes/monitoring/grafana"
-          target   = "/var/lib/grafana"
-          readonly = false
-        }
+      volume_mount {
+        volume      = "grafana-data"
+        destination = "/var/lib/grafana"
+        read_only   = false
       }
 
       template {
