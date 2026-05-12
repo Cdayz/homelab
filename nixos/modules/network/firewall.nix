@@ -13,6 +13,7 @@
     ];
 
     extraCommands = ''
+      # SSH from LAN
       iptables -I nixos-fw 3 -p tcp --dport 22 -s 192.168.0.0/16 -j nixos-fw-accept
     '';
 
