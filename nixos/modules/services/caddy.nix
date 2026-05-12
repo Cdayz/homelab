@@ -36,6 +36,15 @@
       reverse_proxy 127.0.0.1:4646
     '';
 
+    virtualHosts."memos.cdayz.ru".extraConfig = ''
+      log {
+        output file /var/log/caddy/access.log
+        format json
+      }
+
+      reverse_proxy 127.0.0.1:15230
+    '';
+
     virtualHosts."grafana.cdayz.ru".extraConfig = ''
       log {
         output file /var/log/caddy/access.log
