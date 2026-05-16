@@ -5,6 +5,9 @@ theme: auto
 log:
   level: info
 
+ntp:
+  disable_startup_check: true
+
 server:
   address: tcp://0.0.0.0:19091
   endpoints:
@@ -32,12 +35,6 @@ access_control:
       subject:
         - "group:admin"
       policy: two_factor
-
-    - domain: "memos.cdayz.ru"
-      subject:
-        - "group:admin"
-        - "group:family"
-      policy: one_factor
 
 session:
   inactivity: 1w
@@ -195,24 +192,3 @@ identity_providers:
           - authorization_code
         token_endpoint_auth_method: client_secret_basic
         userinfo_signed_response_alg: none
-
-      - client_id: memos
-        client_name: Memos
-        client_secret: {{ secret "/run/authelia-secrets/memos_oidc_client_secret_digest" | quote }}
-        public: false
-        authorization_policy: one_factor
-        require_pkce: false
-        pkce_challenge_method: ''
-        redirect_uris:
-          - https://memos.cdayz.ru/auth/callback
-        scopes:
-          - openid
-          - profile
-          - email
-        response_types:
-          - code
-        grant_types:
-          - authorization_code
-        access_token_signed_response_alg: none
-        userinfo_signed_response_alg: none
-        token_endpoint_auth_method: client_secret_post
