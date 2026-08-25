@@ -1,6 +1,6 @@
 keys:
   - &workstation age1pmnz0hgg05ej9e8jdgpwuhpd0llpe7aegkur3v0qcawt7yx5nqjqgyldrt
-  - &nucbox age12sfvs2nulvg70d4p0dxgszek3emy93c4pgs5madrknyv5yf2ju4s3wvtts
+  - &nucbox age1qu7q27f5u9zewwvs4hd8s0ulztkh9c4stgeywrg25dfs5qugve8qulcvp6
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
