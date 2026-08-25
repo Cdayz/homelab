@@ -2,8 +2,6 @@
 
 {
   boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs.extraPools = [ "tank" ];
-
   networking.hostId = "deadbeef";
 
   environment.systemPackages = with pkgs; [

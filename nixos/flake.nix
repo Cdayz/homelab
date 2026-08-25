@@ -2,10 +2,19 @@
   description = "Homelab NixOS config";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs = {
+      url = "github:NixOS/nixpkgs/nixos-unstable";
+    };
 
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    disko = {
+      url = "github:nix-community/disko/latest";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -13,6 +22,7 @@
       self,
       nixpkgs,
       sops-nix,
+      disko,
       ...
     }:
     {
@@ -21,8 +31,9 @@
 
         modules = [
           sops-nix.nixosModules.sops
+          disko.nixosModules.disko
           ./hosts/nucbox/configuration.nix
         ];
       };
-  };
+    };
 }

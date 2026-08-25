@@ -3,7 +3,6 @@ version: '3'
 vars:
   NUCBOX_USER: nikita
   NUCBOX_HOST: 192.168.1.136
-  NUCBOX_NOMAD_JOBS_DIR: /home/{{ .NUCBOX_USER }}/nomad-jobs
 
 tasks:
   sops:encrypt:
@@ -15,6 +14,18 @@ tasks:
     desc: Decrypt tracked secret files into local raw copies
     cmds:
       - PYTHONPATH=. uv run scripts/decrypt-secrets.py
+
+  nucbox:installer:
+    dir: nixos
+    deps: [sops:encrypt]
+    cmds:
+      - |
+        nix run github:nix-community/nixos-anywhere -- \
+          --flake .#nucbox \
+          --generate-hardware-config nixos-generate-config \
+          ./hosts/nucbox/hardware-configuration.nix \
+          --target-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
+          --build-on remote
 
   nucbox:rebuild:
     dir: nixos
