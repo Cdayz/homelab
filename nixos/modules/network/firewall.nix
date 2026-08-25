@@ -7,10 +7,7 @@
     allowPing = true;
     logRefusedConnections = false;
 
-    allowedTCPPorts = [
-      80
-      443
-    ];
+    allowedTCPPorts = [ ];
 
     extraCommands = ''
       # SSH from LAN
