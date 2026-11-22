@@ -2,7 +2,7 @@ version: '3'
 
 vars:
   NUCBOX_USER: nikita
-  NUCBOX_HOST: 192.168.1.136 # LAN host (set to this IP on router side, to prevent changes on reconnect)
+  NUCBOX_HOST: nucbox # ssh alias: both lan+wifi IPs in /etc/hosts, ssh falls over (see README)
 
 tasks:
   sops:encrypt:
