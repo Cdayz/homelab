@@ -18,12 +18,15 @@
 Сеть настраивается через systemd-networkd (`nixos/modules/network/`):
 
 - `br0` — бридж из `enp3s0` (uplink) и `eno1`, основной линк, DHCP
-- `wlp2s0` — wifi (mt7921e), запасной линк: работает и без lan-провода
+- `wifi0` — wifi (mt7921e), запасной линк: работает и без lan-провода;
+  фиксированное имя задаёт `systemd.network.links` (матч по MAC)
 - route-метрики: провод (100) приоритетнее wifi (300), при обрыве провода
   трафик уходит на wifi
 - `wait-online --any` — boot не висит на сетевом линке, если провод не воткнут
 - `arp_ignore=1` / `arp_announce=2` — оба линка в одном L2, без этого ядро
   отвечает на ARP за чужой интерфейс и ssh по lan деградирует
+- IPv6 на линках выключен (`IPv6AcceptRA=false`): v6-транзит до части CDN
+  (Fastly) из РФ битый
 
 ### Split-VPN (antizapret + openai через AmneziaWG)
 
@@ -32,13 +35,37 @@
 - **amneziawg 3.1** (kernel-модуль, `awg0`, `Table=off` + policy-route таблица 51820)
   — обфускация против DPI: классический WireGuard из РФ режется на data-пакетах
 - **sing-box** (tun `split-vpn` + `auto_redirect`): SNI-sniffing, DNS-хайджек;
-  antizapret-список (remote rule-set, автообновление) + openai-домены → `via-awg`;
-  остальное → direct; github всегда direct (иначе чинилка VPN зависит от VPN)
+  antizapret rule-set + openai-домены → `via-awg`; остальное → direct;
+  github всегда direct (иначе чинилка VPN зависит от VPN)
 - DNS: заблокированные/openai — Quad9 DoH через туннель; остальное — роутер; `ipv4_only`
+- какие домены куда — `domains.json` (`vpn` / `direct`)
 - секрет `vpn/awg-conf` — wg.conf провайдера целиком в sops, `render-awg.py`
   добавляет `Table=off`/маршруты; `make-singbox.py` генерирует конфиг sing-box
 - модуль грузится `modprobe -d /run/current-system/kernel-modules` (autoload не работает,
   а `rebuild:test` не обновляет booted-system)
+
+#### antizapret rule-set: самогенерация
+
+Готовые .srs (zapret-info/z-i, savely-krasovsky) умерли в 2025-м, поэтому
+`split-vpn-ruleset.service` (+timer, ежедневно 04:40) собирает список сам из
+живых источников (~1.8M доменов + ~900 подсетей):
+
+- `antifilter.download/list/domains.lst` — дамп реестра РКН (обновляется 04:30)
+- `community.antifilter.download/list/community.lst` — курируемые подсети
+- [1andrevich/Re-filter-lists](https://github.com/1andrevich/Re-filter-lists) —
+  курируемые домены
+
+Схема: `update-ruleset.sh` (curl всех списков) → `generate-ruleset.py`
+(domains + ip_cidr → source json) → `sing-box rule-set compile` →
+`/var/lib/split-vpn/antizapret.srs` → рестарт sing-box.
+
+Смена VPN-конфига провайдера (ключи у них одноразовые на скачивание):
+
+```bash
+# nixos/secrets/nucbox.raw.yaml → vpn.awg-conf (файл целиком)
+task sops:encrypt
+task nucbox:rebuild
+```
 
 Грабли, на которые наступили (не повторять): IPv6 до Fastly из РФ битый — на линках
 `IPv6AcceptRA=false`; udev-переименование wifi — только матч по MAC с явным `Name=`;
@@ -67,7 +94,7 @@ task nucbox:rebuild
 
 ```
 192.168.1.136 nucbox   # br0, lan
-192.168.1.40  nucbox   # wlp2s0, wifi
+192.168.1.40  nucbox   # wifi0, wifi
 ```
 
 `~/.ssh/config`:
