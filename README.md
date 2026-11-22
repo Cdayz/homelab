@@ -25,6 +25,25 @@
 - `arp_ignore=1` / `arp_announce=2` — оба линка в одном L2, без этого ядро
   отвечает на ARP за чужой интерфейс и ssh по lan деградирует
 
+### Split-VPN (antizapret + openai через AmneziaWG)
+
+`nixos/modules/services/split-vpn/` — прозрачный egress-сплит на хосте:
+
+- **amneziawg 3.1** (kernel-модуль, `awg0`, `Table=off` + policy-route таблица 51820)
+  — обфускация против DPI: классический WireGuard из РФ режется на data-пакетах
+- **sing-box** (tun `split-vpn` + `auto_redirect`): SNI-sniffing, DNS-хайджек;
+  antizapret-список (remote rule-set, автообновление) + openai-домены → `via-awg`;
+  остальное → direct; github всегда direct (иначе чинилка VPN зависит от VPN)
+- DNS: заблокированные/openai — Quad9 DoH через туннель; остальное — роутер; `ipv4_only`
+- секрет `vpn/awg-conf` — wg.conf провайдера целиком в sops, `render-awg.py`
+  добавляет `Table=off`/маршруты; `make-singbox.py` генерирует конфиг sing-box
+- модуль грузится `modprobe -d /run/current-system/kernel-modules` (autoload не работает,
+  а `rebuild:test` не обновляет booted-system)
+
+Грабли, на которые наступили (не повторять): IPv6 до Fastly из РФ битый — на линках
+`IPv6AcceptRA=false`; udev-переименование wifi — только матч по MAC с явным `Name=`;
+`PostUp/PreDown` обязаны быть в `[Interface]`.
+
 ### WiFi-пароль
 
 PSK хранится только в sops (`nixos/secrets/nucbox.yaml`, ключ `wifi/psk`) и

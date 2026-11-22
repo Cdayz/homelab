@@ -3,7 +3,7 @@
 {
   imports = [
     ./ssh.nix
-    # ./split-vpn
+    ./split-vpn
     ./monitoring
   ];
 }
