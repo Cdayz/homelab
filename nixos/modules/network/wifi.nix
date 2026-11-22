@@ -3,7 +3,7 @@
 {
   networking.wireless = {
     enable = true;
-    interfaces = [ "wlp2s0" ];
+    interfaces = [ "wifi0" ];
     # psk живёт в sops-шаблоне, в nix store попадает только ссылка ext:wifi_psk
     secretsFile = config.sops.templates."wifi.env".path;
     networks.XOLODEC = {
@@ -19,16 +19,22 @@
     "net.ipv4.conf.all.arp_announce" = 2;
   };
 
+  # фиксированное имя вместо предиктабельного: матч по MAC (Driver= в uevent
+  # на раннем буте может быть ещё пуст — race), Name= обязателен, иначе
+  # link-файл перебивает 99-default.link и остаётся kernel-имя wlan0
   systemd.network.links."10-wifi" = {
-    matchConfig.Driver = "mt7921e";
-    extraConfig = "WirelessPowersave=false";
+    matchConfig.MACAddress = "4c:23:38:b8:4c:ff";
+    extraConfig = ''
+      Name=wifi0
+      WirelessPowersave=false
+    '';
   };
 
   systemd.network.networks."30-wlan" = {
-    matchConfig.Name = "wlp2s0";
+    matchConfig.Name = "wifi0";
     networkConfig = {
       DHCP = "ipv4";
-      IPv6AcceptRA = true;
+      IPv6AcceptRA = false;
     };
     # wlan — запасной линк, у br0 метрика ниже
     dhcpV4Config.RouteMetric = 300;

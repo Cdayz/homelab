@@ -38,7 +38,7 @@ in
     matchConfig.Name = "br0";
     networkConfig = {
       DHCP = "ipv4";
-      IPv6AcceptRA = true;
+      IPv6AcceptRA = false;
     };
     dhcpV4Config.RouteMetric = 100;
     ipv6AcceptRAConfig.RouteMetric = 100;
