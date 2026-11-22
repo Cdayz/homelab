@@ -1,0 +1,17 @@
+{
+  "vpn": [
+    "openai.com",
+    "chatgpt.com",
+    "oaistatic.com",
+    "oaiusercontent.com",
+    "sora.com",
+    "cdn.auth0.com"
+  ],
+  "direct": [
+    "github.com",
+    "githubusercontent.com",
+    "github.io",
+    "githubassets.com",
+    "ghcr.io"
+  ]
+}

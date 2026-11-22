@@ -3,23 +3,11 @@ import sys
 
 OUT_PATH, DOMAINS_PATH = sys.argv[1], sys.argv[2]
 
-RULESET_URL = (
-    "https://github.com/savely-krasovsky/antizapret-sing-box"
-    "/releases/latest/download/antizapret.srs"
-)
-
-# github всегда direct: иначе nix не может скачать фикс самого VPN,
-# если туннель лежит (antizapret-список включает github CDN)
-GITHUB_DOMAINS = [
-    "github.com",
-    "githubusercontent.com",
-    "github.io",
-    "githubassets.com",
-    "ghcr.io",
-]
-
 with open(DOMAINS_PATH) as f:
-    domains = json.load(f)
+    data = json.load(f)
+
+VPN_DOMAINS = data["vpn"]
+DIRECT_DOMAINS = data["direct"]
 
 config = {
     "log": {"level": "info", "timestamp": True},
@@ -39,9 +27,9 @@ config = {
             },
         ],
         "rules": [
-            {"domain_suffix": GITHUB_DOMAINS, "server": "direct-dns"},
+            {"domain_suffix": DIRECT_DOMAINS, "server": "direct-dns"},
             {"rule_set": "antizapret", "server": "vpn-dns"},
-            {"domain_suffix": domains, "server": "vpn-dns"},
+            {"domain_suffix": VPN_DOMAINS, "server": "vpn-dns"},
         ],
         "final": "direct-dns",
     },
@@ -66,17 +54,16 @@ config = {
             {"action": "sniff"},
             {"action": "hijack-dns", "protocol": "dns"},
             {"ip_is_private": True, "outbound": "direct"},
-            {"domain_suffix": GITHUB_DOMAINS, "outbound": "direct"},
+            {"domain_suffix": DIRECT_DOMAINS, "outbound": "direct"},
             {"rule_set": "antizapret", "outbound": "via-awg"},
-            {"domain_suffix": domains, "outbound": "via-awg"},
+            {"domain_suffix": VPN_DOMAINS, "outbound": "via-awg"},
         ],
         "rule_set": [
             {
-                "type": "remote",
+                "type": "local",
                 "tag": "antizapret",
                 "format": "binary",
-                "url": RULESET_URL,
-                "update_interval": "24h",
+                "path": "/var/lib/split-vpn/antizapret.srs",
             }
         ],
         "final": "direct",
