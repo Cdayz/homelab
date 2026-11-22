@@ -32,16 +32,18 @@
   # No need for fonts on a server
   fonts.fontconfig.enable = false;
 
-  # Prevent LLMNR poisoning attacks
+  # Prevent LLMNR poisoning attacks; mDNS is not used here, keeps resolved off port 5353
   services.resolved = (
     # TODO: remove when 25.11 is deprecated
     if options.services.resolved ? settings then
       {
         settings.Resolve.LLMNR = "false";
+        settings.Resolve.MulticastDNS = "false";
       }
     else
       {
         llmnr = "false";
+        multicastDNS = "false";
       }
   );
 }

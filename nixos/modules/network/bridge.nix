@@ -40,6 +40,8 @@ in
       DHCP = "ipv4";
       IPv6AcceptRA = true;
     };
+    dhcpV4Config.RouteMetric = 100;
+    ipv6AcceptRAConfig.RouteMetric = 100;
     linkConfig.RequiredForOnline = "routable";
   };
 }

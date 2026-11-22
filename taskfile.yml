@@ -2,7 +2,7 @@ version: '3'
 
 vars:
   NUCBOX_USER: nikita
-  NUCBOX_HOST: 192.168.1.136
+  NUCBOX_HOST: 192.168.1.136 # LAN host (set to this IP on router side, to prevent changes on reconnect)
 
 tasks:
   sops:encrypt:

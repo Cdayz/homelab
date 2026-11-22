@@ -16,6 +16,8 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_19;
 
+  hardware.enableRedistributableFirmware = true;
+
   networking.hostName = "nucbox";
   console = {
     font = "Lat2-Terminus16";
