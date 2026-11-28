@@ -1,13 +1,7 @@
+{ pkgs, ... }:
 {
-  pkgs,
-  lib,
-  ...
-}:
-{
-  # various terminfo packages
+  # terminfo для терминала на control-plane (ghostty)
   environment.systemPackages = [
-    pkgs.wezterm.terminfo # this one does not need compilation
-    # avoid compiling desktop stuff when doing cross nixos
     (pkgs.runCommand "ghostty-terminfo"
       {
         nativeBuildInputs = [ pkgs._7zz ];
@@ -19,10 +13,5 @@
         cp -r Ghostty.app/Contents/Resources/terminfo/78/xterm-ghostty $out/share/terminfo/x
       ''
     )
-  ]
-  ++ lib.optionals (pkgs.stdenv.hostPlatform == pkgs.stdenv.buildPlatform) [
-    pkgs.foot.terminfo
-    pkgs.kitty.terminfo
-    pkgs.termite.terminfo
   ];
 }

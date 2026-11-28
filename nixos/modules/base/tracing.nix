@@ -2,7 +2,8 @@
 {
 
   programs.bcc.enable = !pkgs.stdenv.hostPlatform.isRiscV;
-  programs.sysdig.enable = !pkgs.stdenv.isAarch64 && !pkgs.stdenv.hostPlatform.isRiscV;
+  # sysdig: не собирается под ядро 6.18 (scap.ko), вернём когда починят
+  # programs.sysdig.enable = !pkgs.stdenv.isAarch64 && !pkgs.stdenv.hostPlatform.isRiscV;
 
   environment.systemPackages = [
     pkgs.strace

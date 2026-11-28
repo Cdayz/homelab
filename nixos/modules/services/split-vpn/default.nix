@@ -6,6 +6,12 @@ let
   # какие домены куда: domains.json
   domainsFile = ./domains.json;
 
+  # cronet/naive не нужны, а vendored cronet-go валит сборку 1.14 в strict-cgo
+  sing-box = pkgs.sing-box.override {
+    withStaticCronet = false;
+    withNaiveOutbound = false;
+  };
+
   makeConfig = pkgs.writers.writePython3 "make-singbox" { } (
     builtins.readFile ./make-singbox.py
   );
@@ -47,7 +53,7 @@ in
       pkgs.curl
       pkgs.findutils
       pkgs.gnugrep
-      pkgs.sing-box
+      sing-box
       pkgs.systemd
     ];
 
@@ -85,9 +91,9 @@ in
       StateDirectory = "split-vpn";
       ExecStartPre = [
         "${makeConfig} /run/split-vpn/config.json ${domainsFile} ${vlessUri}"
-        "${pkgs.sing-box}/bin/sing-box check -c /run/split-vpn/config.json"
+        "${sing-box}/bin/sing-box check -c /run/split-vpn/config.json"
       ];
-      ExecStart = "${pkgs.sing-box}/bin/sing-box run -c /run/split-vpn/config.json";
+      ExecStart = "${sing-box}/bin/sing-box run -c /run/split-vpn/config.json";
       Restart = "always";
       RestartSec = "5";
       AmbientCapabilities = [

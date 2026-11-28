@@ -5,7 +5,14 @@
     "oaistatic.com",
     "oaiusercontent.com",
     "sora.com",
-    "cdn.auth0.com"
+    "cdn.auth0.com",
+    "tailscale.com",
+    "tailscale.io",
+    "ts.net",
+    "cache.nixos.org"
+  ],
+  "resolve-direct": [
+    "cache.nixos.org"
   ],
   "direct": [
     "github.com",

@@ -4,6 +4,9 @@
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "deadbeef";
 
+  # новый дефолт 26.11; pool импортируется строго по cache-file
+  boot.zfs.forceImportRoot = false;
+
   environment.systemPackages = with pkgs; [
     zfs
   ];

@@ -50,3 +50,16 @@ tasks:
             --target-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
             --build-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
             --sudo
+
+  nucbox:rebuild:boot:
+    desc: Write boot entry without switching (for kernel/dbus-level updates, then reboot)
+    dir: nixos
+    deps: [sops:encrypt]
+    cmds:
+      - |
+        nix run nixpkgs#nixos-rebuild -- \
+            boot \
+            --flake .#nucbox \
+            --target-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
+            --build-host {{.NUCBOX_USER}}@{{.NUCBOX_HOST}} \
+            --sudo

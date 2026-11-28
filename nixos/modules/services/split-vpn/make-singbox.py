@@ -12,6 +12,7 @@ with open(DOMAINS_PATH) as f:
     data = json.load(f)
 
 VPN_DOMAINS = data["vpn"]
+RESOLVE_DIRECT = data.get("resolve-direct", [])
 DIRECT_DOMAINS = data["direct"]
 
 with open(VLESS_URI_PATH) as f:
@@ -77,6 +78,7 @@ config = {
             },
         ],
         "rules": [
+            {"domain_suffix": RESOLVE_DIRECT, "server": "direct-dns"},
             {"domain_suffix": DIRECT_DOMAINS, "server": "direct-dns"},
             {"rule_set": "antizapret", "server": "vpn-dns"},
             {"domain_suffix": VPN_DOMAINS, "server": "vpn-dns"},
