@@ -4,7 +4,6 @@
   imports = [
     ./firewall.nix
     ./bridge.nix
-    ./wifi.nix
   ];
 
   networking.useDHCP = false;

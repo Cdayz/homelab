@@ -11,7 +11,6 @@
     ./cleaning.nix
     ./bootloader.nix
     ./power.nix
-    ./docker.nix
     ./sops.nix
     ./terminfo.nix
     ./tracing.nix
