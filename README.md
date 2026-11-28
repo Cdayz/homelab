@@ -28,21 +28,21 @@
 - IPv6 на линках выключен (`IPv6AcceptRA=false`): v6-транзит до части CDN
   (Fastly) из РФ битый
 
-### Split-VPN (antizapret + openai через AmneziaWG)
+### Split-VPN (antizapret + openai через VLESS)
 
 `nixos/modules/services/split-vpn/` — прозрачный egress-сплит на хосте:
 
-- **amneziawg 3.1** (kernel-модуль, `awg0`, `Table=off` + policy-route таблица 51820)
-  — обфускация против DPI: классический WireGuard из РФ режется на data-пакетах
+- **транспорт: VLESS + Reality** (gRPC, маскировка под TLS к CDN) — единственное,
+  что пережило DPI в 2026-м: сток WireGuard режется, AmneziaWG 3.1 провайдер
+  связи задушил по data-пакетам через ~неделю
 - **sing-box** (tun `split-vpn` + `auto_redirect`): SNI-sniffing, DNS-хайджек;
-  antizapret rule-set + openai-домены → `via-awg`; остальное → direct;
+  antizapret rule-set + openai-домены → `via-vpn`; остальное → direct;
   github всегда direct (иначе чинилка VPN зависит от VPN)
 - DNS: заблокированные/openai — Quad9 DoH через туннель; остальное — роутер; `ipv4_only`
 - какие домены куда — `domains.json` (`vpn` / `direct`)
-- секрет `vpn/awg-conf` — wg.conf провайдера целиком в sops, `render-awg.py`
-  добавляет `Table=off`/маршруты; `make-singbox.py` генерирует конфиг sing-box
-- модуль грузится `modprobe -d /run/current-system/kernel-modules` (autoload не работает,
-  а `rebuild:test` не обновляет booted-system)
+- секрет `vpn/vless-uri` — vless:// ссылка целиком в sops, `make-singbox.py`
+  парсит её в outbound (uuid/pbk/sni/sid/serviceName), при смене секрета
+  сервис перезапускается сам
 
 #### antizapret rule-set: самогенерация
 
@@ -59,10 +59,10 @@
 (domains + ip_cidr → source json) → `sing-box rule-set compile` →
 `/var/lib/split-vpn/antizapret.srs` → рестарт sing-box.
 
-Смена VPN-конфига провайдера (ключи у них одноразовые на скачивание):
+Смена VPN-конфига провайдера (vless-ссылка целиком):
 
 ```bash
-# nixos/secrets/nucbox.raw.yaml → vpn.awg-conf (файл целиком)
+# nixos/secrets/nucbox.raw.yaml → vpn.vless-uri
 task sops:encrypt
 task nucbox:rebuild
 ```
